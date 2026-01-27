@@ -555,11 +555,6 @@
                         <h4 style="color: #2E2E2E; margin-bottom: 10px;">💾 Data Backup & Restore</h4>
                         <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Export your data to keep it safe or transfer to another device/app version.</p>
                         
-                        <!-- Mobile-Friendly Copy Button -->
-                        <button onclick="copyDataToClipboard()" style="padding: 12px 16px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-bottom: 10px;">
-                            📋 Copy All Data to Clipboard (Mobile Friendly)
-                        </button>
-                        
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <button onclick="exportAllData()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600;">
                                 📤 Export File
@@ -568,17 +563,6 @@
                                 📥 Import File
                             </button>
                             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importAllData(event)">
-                        </div>
-                        
-                        <!-- Paste Import for Mobile -->
-                        <button onclick="showPasteImport()" style="padding: 10px 16px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 10px;">
-                            📝 Paste Data to Import (Mobile Friendly)
-                        </button>
-                        <div id="pasteImportArea" style="display: none; margin-top: 10px;">
-                            <textarea id="pasteDataInput" placeholder="Paste your backup data here..." style="width: 100%; height: 100px; padding: 10px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px;"></textarea>
-                            <button onclick="importFromPaste()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 5px;">
-                                ✅ Import Pasted Data
-                            </button>
                         </div>
                     </div>
                     
@@ -628,9 +612,6 @@
         <div class="form-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="margin: 0;">Order Details</h2>
-                <button onclick="toggleGuide()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">
-                    Show Guide
-                </button>
             </div>
             
             <form id="orderForm">
@@ -694,209 +675,6 @@
                     <p><strong>💡 How it works:</strong> This shows all orders with anniversary countdown timers. Send anniversary emails manually for better customer retention, or mark as "Skip" if you don't want to contact that customer.</p>
                 </div>
                 <div id="anniversaryOrdersList"></div>
-            </div>
-        </div>
-
-        <!-- User Guide & Developer Notes Section -->
-        <div class="guide-section" id="guideSection" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3>User Guide & Developer Notes</h3>
-                <button onclick="toggleGuide()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">
-                 Hide Guide
-                </button>
-            </div>
-            
-            <div class="guide-content">
-                <!-- User Guide -->
-                <div class="guide-card">
-                    <h3>👤 User Guide - LaDun Cakes Email System</h3>
-                    
-                    <h4>🚀 Quick Start</h4>
-                    <ol>
-                        <li><strong>Configure EmailJS:</strong> Click "Show Email Config", enter your EmailJS credentials, and save</li>
-                        <li><strong>Add Orders:</strong> Fill customer details and submit orders</li>
-                        <li><strong>Send Collection Notice:</strong> Choose Email or WhatsApp when cake is ready</li>
-                        <li><strong>Anniversary Management:</strong> Use Anniversary Email Management for automated customer retention</li>
-                    </ol>
-
-                    <h4>📧 Email Templates Required</h4>
-                    <p><strong>Template 1 (Collection Notice):</strong> template_i9qb3xr - Sent when cake is ready for collection</p>
-                    <p><strong>Template 2 (Anniversary Marketing):</strong> template_rkixehc - Sent for customer retention (323 days after collection)</p>
-
-                    <h4>⚙️ EmailJS Setup</h4>
-                    <ol>
-                        <li>Create free account at <strong>emailjs.com</strong></li>
-                        <li>Connect Gmail service (recommended)</li>
-                        <li>Create 2 email templates with provided variables</li>
-                        <li>Copy Public Key: elytg58ftKBMdGS1G, Service ID: service_i1yme2l, Template IDs</li>
-                        <li>Configure in app and test with 1-minute test mode</li>
-                    </ol>
-
-                    <h4>🔧 Template Variables Available</h4>
-                    <ul>
-                        <li><code>{{customer_name}}</code> - Customer's name</li>
-                        <li><code>{{customer_email}}</code> - Customer's email</li>
-                        <li><code>{{cake_type}}</code> - Type of cake ordered</li>
-                        <li><code>{{collection_date}}</code> - Formatted collection date</li>
-                        <li><code>{{collection_time}}</code> - Collection time</li>
-                        <li><code>{{order_details}}</code> - Special requests</li>
-                        <li><code>{{instagram_link}}</code> - Instagram: @laduncakes</li>
-                        <li><code>{{tiktok_link}}</code> - TikTok: @laduncakes</li>
-                        <li><code>{{facebook_link}}</code> - Facebook page</li>
-                        <li><code>{{google_review_link}}</code> - Google Reviews with star emoji</li>
-                        <li><code>{{business_name}}</code> - LaDun Cakes</li>
-                        <li><code>{{anniversary_date}}</code> - For anniversary template</li>
-                        <li><code>{{original_collection_date}}</code> - For anniversary template</li>
-                    </ul>
-
-                    <h4>🎯 Complete Order Workflow</h4>
-                    <ol>
-                        <li><strong>Order Submitted:</strong> Customer details captured in system</li>
-                        <li><strong>Cake Ready:</strong> Choose "📧 Send Collection Email" or "💬 Send WhatsApp Message"</li>
-                        <li><strong>Collection Notice:</strong> Message sent with pickup details and social media links</li>
-                        <li><strong>Order Archives:</strong> Moves to anniversary management system</li>
-                        <li><strong>Anniversary Marketing:</strong> Automated countdown to 323-day anniversary</li>
-                        <li><strong>Customer Retention:</strong> Send personalized anniversary emails or skip customers</li>
-                    </ol>
-
-                    <h4>📅 Anniversary Management System</h4>
-                    <ul>
-                        <li><strong>323-Day Cycle:</strong> Anniversary emails available 323 days (10.6 months) after collection</li>
-                        <li><strong>1-Minute Test Mode:</strong> Enable for rapid testing of anniversary workflow</li>
-                        <li><strong>Real-Time Countdown:</strong> Live timer shows exact time until anniversary ready</li>
-                        <li><strong>Smart Controls:</strong> Buttons activate automatically when countdown reaches zero</li>
-                        <li><strong>Red Alert System:</strong> Visual urgency indicators for ready anniversaries</li>
-                        <li><strong>Auto-Hide Processed:</strong> Sent/skipped anniversaries disappear from active list</li>
-                        <li><strong>Statistics Dashboard:</strong> Track ready, sent, skipped, and waiting anniversaries</li>
-                    </ul>
-
-                    <h4>🧪 Testing Features</h4>
-                    <ul>
-                        <li><strong>1-Minute Test Mode:</strong> Rapid anniversary testing (1 minute instead of 323 days)</li>
-                        <li><strong>Recalculate Button:</strong> Update existing orders when switching modes</li>
-                        <li><strong>Live Updates:</strong> Anniversary management refreshes every second in test mode</li>
-                        <li><strong>Persistent Timers:</strong> Countdowns survive page refreshes</li>
-                    </ul>
-
-                    <h4>⚠️ Important Notes</h4>
-                    <ul>
-                        <li><strong>� Mobile Friendly:</strong> All emails sent manually - works perfectly on any device</li>
-                        <li><strong>🎂 Anniversary Strategy:</strong> 323 days = perfect timing for next occasion marketing</li>
-                        <li><strong>� Reliable Delivery:</strong> Manual sending ensures emails always work</li>
-                        <li><strong>📊 Free Tier:</strong> EmailJS free account: 200 emails/month limit</li>
-                        <li><strong>💾 Local Storage:</strong> Orders saved locally in browser storage</li>
-                        <li><strong>🧹 Data Management:</strong> Use "Clear All Orders" to clean up test data</li>
-                    </ul>
-                </div>
-
-                <!-- Developer Notes -->
-                <div class="guide-card" style="margin-top: 20px;">
-                    <h3>🔧 Developer Notes - Technical Implementation</h3>
-                    
-                    <h4>🏗️ Architecture Overview</h4>
-                    <ul>
-                        <li><strong>Frontend:</strong> Single HTML file with embedded CSS/JavaScript</li>
-                        <li><strong>Email Service:</strong> EmailJS integration for reliable delivery</li>
-                        <li><strong>Storage:</strong> Browser localStorage for order persistence</li>
-                        <li><strong>Styling:</strong> Custom CSS with LaDun Cakes brand colors</li>
-                        <li><strong>Typography:</strong> Google Fonts Montserrat for professional appearance</li>
-                        <li><strong>Responsive:</strong> Mobile-first design with desktop optimization</li>
-                    </ul>
-
-                    <h4>🎨 Brand Guidelines</h4>
-                    <ul>
-                        <li><strong>Header Color:</strong> #5f0f40 (Dark burgundy)</li>
-                        <li><strong>Accent Color:</strong> #F8C9CC (Soft blush)</li>
-                        <li><strong>Gold Highlights:</strong> #C9A13C (Metallic gold for buttons/borders)</li>
-                        <li><strong>Background:</strong> #FFFFFF (Clean white)</li>
-                        <li><strong>Text:</strong> #2E2E2E (Charcoal) and #FFFFFF (White on dark)</li>
-                    </ul>
-
-                    <h4>📦 Key Components</h4>
-                    <ul>
-                        <li><strong>Order Form:</strong> Customer data collection with validation and phone numbers</li>
-                        <li><strong>Order Management:</strong> Active order display with email and WhatsApp controls</li>
-                        <li><strong>Anniversary System:</strong> Automated countdown with dual messaging options</li>
-                        <li><strong>WhatsApp Integration:</strong> Direct messaging via WhatsApp web/app links</li>
-                        <li><strong>Configuration Panel:</strong> EmailJS credentials and test mode settings</li>
-                        <li><strong>Statistics Dashboard:</strong> Real-time anniversary status tracking</li>
-                    </ul>
-
-                    <h4>⚙️ Technical Features</h4>
-                    <ul>
-                        <li><strong>Real-Time Updates:</strong> Auto-refresh every 1-5 seconds based on mode</li>
-                        <li><strong>Persistent Storage:</strong> Anniversary dates stored permanently to survive refreshes</li>
-                        <li><strong>Dual Timing:</strong> 323-day production vs 1-minute test mode</li>
-                        <li><strong>Dual Messaging:</strong> Email (EmailJS) and WhatsApp (wa.me links)</li>
-                        <li><strong>Smart Button States:</strong> Disabled/enabled based on countdown status</li>
-                        <li><strong>Phone Validation:</strong> Automatic phone number cleaning and validation</li>
-                        <li><strong>Error Handling:</strong> Comprehensive try/catch with user feedback</li>
-                        <li><strong>Debug Logging:</strong> Console output for troubleshooting</li>
-                    </ul>
-
-                    <h4>🔧 Configuration Management</h4>
-                    <ul>
-                        <li><strong>EmailJS Public Key:</strong> elytg58ftKBMdGS1G</li>
-                        <li><strong>Service ID:</strong> service_i1yme2l</li>
-                        <li><strong>Collection Template:</strong> template_i9qb3xr</li>
-                        <li><strong>Anniversary Template:</strong> template_rkixehc</li>
-                        <li><strong>Storage Keys:</strong> miniAppEmailConfig, miniAppOrders, miniAppConfig</li>
-                    </ul>
-
-                    <h4>📊 Data Structure</h4>
-                    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>Order Object:
-{
-  id: timestamp,
-  customerName: string,
-  customerEmail: string,
-  customerPhone: string,              // NEW: WhatsApp phone number
-  cakeType: string,
-  collectionDate: YYYY-MM-DD,
-  collectionTime: HH:MM,
-  orderDetails: string,
-  orderDate: YYYY-MM-DD,
-  emailSent: boolean,
-  thankYouSent: boolean,
-  whatsappSent: boolean,              // NEW: Collection WhatsApp sent
-  thankYouSentTime: ISO string,
-  anniversaryDate: ISO string,
-  anniversarySent: boolean,
-  anniversaryWhatsappSent: boolean,   // NEW: Anniversary WhatsApp sent
-  anniversarySentDate: string,
-  anniversarySkipped: boolean,
-  anniversarySkippedDate: string
-}</code></pre>
-
-                    <h4>🚀 Deployment Notes</h4>
-                    <ul>
-                        <li><strong>Single File:</strong> Complete application in one HTML file</li>
-                        <li><strong>No Build Process:</strong> Ready to use - just open in browser</li>
-                        <li><strong>No Server Required:</strong> Runs entirely client-side</li>
-                        <li><strong>CDN Dependencies:</strong> EmailJS SDK and Google Fonts</li>
-                        <li><strong>Browser Compatibility:</strong> Modern browsers with localStorage support</li>
-                        <li><strong>Offline Capability:</strong> Works offline except for email sending</li>
-                    </ul>
-
-                    <h4>🐛 Troubleshooting</h4>
-                    <ul>
-                        <li><strong>Email Not Sending:</strong> Check EmailJS config and template IDs</li>
-                        <li><strong>Buttons Not Working:</strong> Check browser console for JavaScript errors</li>
-                        <li><strong>Timer Reset Issues:</strong> Use "Recalculate All Anniversary Dates" button</li>
-                        <li><strong>Missing Orders:</strong> Check localStorage in browser dev tools</li>
-                        <li><strong>Anniversary Issues:</strong> Verify test mode settings and stored dates</li>
-                    </ul>
-
-                    <h4>📈 Future Enhancements</h4>
-                    <ul>
-                        <li>Export/Import order data functionality</li>
-                        <li>Customer database integration</li>
-                        <li>Advanced reporting and analytics</li>
-                        <li>Multiple anniversary reminder types</li>
-                        <li>Automated backup system</li>
-                    </ul>
-                </div>
-
-
             </div>
         </div>
 
@@ -985,20 +763,6 @@
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                 displayOrders();
                 showStatus('🗑️ All orders cleared successfully!', 'success');
-            }
-        }
-
-        // Toggle guide section
-        function toggleGuide() {
-            const guideSection = document.getElementById('guideSection');
-            const buttons = document.querySelectorAll('button[onclick="toggleGuide()"]');
-            
-            if (guideSection.style.display === 'none') {
-                guideSection.style.display = 'block';
-                buttons.forEach(btn => btn.innerHTML = '📖 Hide Guide');
-            } else {
-                guideSection.style.display = 'none';
-                buttons.forEach(btn => btn.innerHTML = '📖 Show Guide');
             }
         }
 
@@ -1134,6 +898,9 @@
             orders.unshift(order);
             localStorage.setItem('miniAppOrders', JSON.stringify(orders));
             displayOrders();
+            
+            // Auto-sync to cloud after saving order
+            autoSyncToCloud();
 
             showStatus(`🎂 Order saved for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
             
@@ -1396,6 +1163,9 @@ Ladun Cakes`;
             
             localStorage.setItem('miniAppOrders', JSON.stringify(orders));
             
+            // Auto-sync to cloud after sending collection WhatsApp
+            autoSyncToCloud();
+            
             setTimeout(() => {
                 displayOrders();
             }, 1000);
@@ -1439,6 +1209,9 @@ Ladun Cakes`;
             order.anniversaryWhatsappSent = true;
             order.anniversarySentDate = new Date().toLocaleString();
             localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+            
+            // Auto-sync to cloud after sending anniversary WhatsApp
+            autoSyncToCloud();
             
             showStatus(`🎉 Anniversary WhatsApp opened for ${order.customerName}!`, 'success');
             
@@ -1934,142 +1707,6 @@ Ladun Cakes`;
         
         console.log('💾 Export/Import functions available: exportAllData(), importAllData()');
 
-        // ===== MOBILE-FRIENDLY COPY/PASTE FUNCTIONS =====
-        // Copy all data to clipboard (works great on mobile!)
-        function copyDataToClipboard() {
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    appVersion: '1.0-whatsapp',
-                    orders: JSON.parse(localStorage.getItem('miniAppOrders') || '[]'),
-                    appConfig: JSON.parse(localStorage.getItem('miniAppConfig') || '{}')
-                };
-                
-                const dataStr = JSON.stringify(exportData);
-                
-                // Try modern clipboard API first
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(dataStr).then(() => {
-                        showStatus(`✅ Data copied to clipboard! (${exportData.orders.length} orders) - Paste this in Notes app or send to yourself!`, 'success');
-                    }).catch(err => {
-                        // Fallback for iOS
-                        fallbackCopyToClipboard(dataStr, exportData.orders.length);
-                    });
-                } else {
-                    // Fallback for older browsers
-                    fallbackCopyToClipboard(dataStr, exportData.orders.length);
-                }
-            } catch (error) {
-                console.error('Copy error:', error);
-                showStatus('❌ Copy failed: ' + error.message, 'error');
-            }
-        }
-        
-        // Fallback copy method for iOS and older browsers
-        function fallbackCopyToClipboard(text, orderCount) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-9999px';
-            textArea.style.top = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showStatus(`✅ Data copied to clipboard! (${orderCount} orders) - Paste this in Notes app or send to yourself!`, 'success');
-            } catch (err) {
-                // If copy fails, show the data for manual copy
-                showManualCopyDialog(text);
-            }
-            
-            document.body.removeChild(textArea);
-        }
-        
-        // Show manual copy dialog if automatic copy fails
-        function showManualCopyDialog(text) {
-            const dialog = document.createElement('div');
-            dialog.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
-            dialog.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 80%; overflow: auto;">
-                    <h3 style="margin-bottom: 10px;">📋 Copy This Data Manually</h3>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Long-press and select all, then copy:</p>
-                    <textarea id="manualCopyText" style="width: 100%; height: 150px; font-size: 10px; padding: 10px;" readonly>${text}</textarea>
-                    <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 10px; padding: 10px 20px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; width: 100%; font-weight: 600;">Close</button>
-                </div>
-            `;
-            document.body.appendChild(dialog);
-            document.getElementById('manualCopyText').select();
-        }
-        
-        // Show paste import area
-        function showPasteImport() {
-            const pasteArea = document.getElementById('pasteImportArea');
-            pasteArea.style.display = pasteArea.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        // Import from pasted data
-        function importFromPaste() {
-            const pasteInput = document.getElementById('pasteDataInput');
-            const pastedData = pasteInput.value.trim();
-            
-            if (!pastedData) {
-                showStatus('❌ Please paste your backup data first', 'error');
-                return;
-            }
-            
-            try {
-                const importData = JSON.parse(pastedData);
-                
-                // Validate the data structure
-                if (!importData.orders) {
-                    throw new Error('Invalid backup data - no orders found');
-                }
-                
-                const orderCount = importData.orders.length;
-                const exportDate = importData.exportDate ? new Date(importData.exportDate).toLocaleDateString() : 'Unknown';
-                
-                if (!confirm(`Import data from backup?\n\n📅 Backup Date: ${exportDate}\n📦 Orders: ${orderCount}\n\n⚠️ This will REPLACE all current data!`)) {
-                    return;
-                }
-                
-                // Import orders
-                orders = importData.orders;
-                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                displayOrders();
-                
-                // Import app config
-                if (importData.appConfig) {
-                    localStorage.setItem('miniAppConfig', JSON.stringify(importData.appConfig));
-                    if (importData.appConfig.testMode !== undefined) {
-                        document.getElementById('testMode').checked = importData.appConfig.testMode;
-                    }
-                }
-                
-                // Import email config if present
-                if (importData.emailConfig) {
-                    localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
-                }
-                
-                // Clear paste area and hide it
-                pasteInput.value = '';
-                document.getElementById('pasteImportArea').style.display = 'none';
-                
-                showStatus(`✅ Data imported successfully! ${orderCount} orders restored from ${exportDate}`, 'success');
-                
-                // Refresh anniversary display if visible
-                const anniversaryManager = document.getElementById('anniversaryManager');
-                if (anniversaryManager && anniversaryManager.style.display !== 'none') {
-                    displayAnniversaryOrders();
-                }
-                
-            } catch (error) {
-                console.error('Paste import error:', error);
-                showStatus('❌ Import failed: ' + error.message + '. Make sure you pasted the complete data.', 'error');
-            }
-        }
-
         // ===== GOOGLE SHEETS CLOUD SYNC FUNCTIONS =====
         
         // Default Google Sheets API URL (hardcoded for convenience)
@@ -2349,6 +1986,65 @@ Ladun Cakes`;
                 window.autoSyncTimeout = setTimeout(() => {
                     syncToCloud();
                 }, 2000);
+            }
+        }
+        
+        // Auto-sync to cloud (silent - no UI updates, for background sync)
+        async function autoSyncToCloud() {
+            const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
+            const url = config.googleSheetsUrl || DEFAULT_GOOGLE_SHEETS_URL;
+            
+            if (!url) {
+                console.log('Auto-sync skipped: No cloud URL configured');
+                return;
+            }
+            
+            try {
+                console.log('🔄 Auto-syncing to cloud...');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify({
+                        action: 'syncOrders',
+                        orders: orders
+                    })
+                });
+                
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (parseError) {
+                    console.error('Auto-sync parse error:', parseError);
+                    return;
+                }
+                
+                if (data.error) {
+                    console.error('Auto-sync error:', data.error);
+                } else {
+                    // Update local orders with merged data
+                    orders = data.orders;
+                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                    
+                    // Update last sync time
+                    config.lastSync = data.lastSync;
+                    localStorage.setItem('miniAppConfig', JSON.stringify(config));
+                    
+                    // Update UI if sync display exists
+                    const lastSyncDisplay = document.getElementById('lastSyncTime');
+                    if (lastSyncDisplay) {
+                        updateLastSyncDisplay(data.lastSync);
+                    }
+                    
+                    console.log(`✅ Auto-synced! ${data.mergedCount} orders in cloud`);
+                }
+            } catch (error) {
+                console.error('Auto-sync failed:', error.message);
             }
         }
         

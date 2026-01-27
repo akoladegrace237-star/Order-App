@@ -1254,6 +1254,9 @@
                 orders.unshift(order);
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                 displayOrders();
+                
+                // Auto-sync to cloud after saving order
+                autoSyncToCloud();
 
                 showStatus(`🎂 Order confirmed for ${orderData.customerEmail}! Thank you email will be available 2 hours before collection.`, 'success');
                 
@@ -1449,6 +1452,9 @@
                 
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                 
+                // Auto-sync to cloud after sending collection notice
+                autoSyncToCloud();
+                
                 showStatus('🎂 Collection notice sent successfully! Order completed and archived.', 'success');
                 
                 // Update display after a brief delay to show the order disappearing
@@ -1533,6 +1539,9 @@
                 order.anniversarySent = true;
                 order.anniversarySentDate = new Date().toLocaleString();
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                
+                // Auto-sync to cloud after sending anniversary email
+                autoSyncToCloud();
                 
                 showStatus(`🎉 Anniversary email sent successfully to ${order.customerName}!`, 'success');
                 
@@ -2451,6 +2460,65 @@
             if (isoDate) {
                 const date = new Date(isoDate);
                 display.textContent = `Last sync: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+        }
+        
+        // Auto-sync to cloud (silent - no UI updates, for background sync)
+        async function autoSyncToCloud() {
+            const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
+            const url = config.googleSheetsUrl || DEFAULT_GOOGLE_SHEETS_URL;
+            
+            if (!url) {
+                console.log('Auto-sync skipped: No cloud URL configured');
+                return;
+            }
+            
+            try {
+                console.log('🔄 Auto-syncing to cloud...');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify({
+                        action: 'syncOrders',
+                        orders: orders
+                    })
+                });
+                
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (parseError) {
+                    console.error('Auto-sync parse error:', parseError);
+                    return;
+                }
+                
+                if (data.error) {
+                    console.error('Auto-sync error:', data.error);
+                } else {
+                    // Update local orders with merged data
+                    orders = data.orders;
+                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                    
+                    // Update last sync time
+                    config.lastSync = data.lastSync;
+                    localStorage.setItem('miniAppConfig', JSON.stringify(config));
+                    
+                    // Update UI if sync display exists
+                    const lastSyncDisplay = document.getElementById('lastSyncTime');
+                    if (lastSyncDisplay) {
+                        updateLastSyncDisplay(data.lastSync);
+                    }
+                    
+                    console.log(`✅ Auto-synced! ${data.mergedCount} orders in cloud`);
+                }
+            } catch (error) {
+                console.error('Auto-sync failed:', error.message);
             }
         }
         
