@@ -195,5 +195,4 @@ LaDun Cakes specializes in creating beautiful, handcrafted cakes for life's most
 
 **Made with 💕 for LaDun Cakes**  
 **Created by GitHub Copilot**  
-
 **© 2025 LaDun Cakes**

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LaDun Cakes - WhatsApp Order Manager</title>
+    <title>Mini Order Email App</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -140,7 +140,7 @@
         }
 
         .setup-section.expanded {
-            max-height: 1200px; /* Increased to fit all content */
+            max-height: 500px;
             padding: 15px; /* Reduced from 20px */
         }
 
@@ -522,7 +522,7 @@
                 <img src=".//image/Logo.png" alt="Logo" class="header-logo">
                 <div style="text-align: center;">
                     <div>Ladun Cakes</div>
-                    <div style="font-size: 0.6em; margin-top: 5px;">WhatsApp Order Manager</div>
+                    <div style="font-size: 0.6em; margin-top: 5px;">Order Email Notification</div>
                 </div>
             </h1>
             <p></p>
@@ -530,61 +530,93 @@
 
         <!-- Mobile Warning -->
         <div id="mobileWarning" style="display: none; background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; margin: 10px 20px; border-radius: 8px; text-align: center;">
-            <strong>📱 Mobile Friendly:</strong> This app works perfectly on mobile! All messages sent via WhatsApp for instant delivery.
+            <strong>📱 Mobile Friendly:</strong> This app works perfectly on mobile! All emails are sent manually for reliable delivery.
         </div>
 
-        <!-- Test Mode Toggle -->
+        <!-- Email Setup Section -->
         <div class="setup-section collapsed" id="setupSection">
             <div class="setup-header" style="justify-content: center;">
                 <button class="toggle-btn" onclick="toggleSetup()" id="toggleBtn">
-                    Show Settings
+                    Show Config
                 </button>
             </div>
             <div class="config-content" id="configContent">
-                <div style="padding: 15px;">
-                    <label style="display: block; margin-bottom: 15px;">
-                        <input type="checkbox" id="testMode" onchange="toggleTestMode()"> 
-                        🧪 1-Minute Test Mode (Anniversary messages sent 1 minute after collection)
-                    </label>
-                    <button onclick="recalculateAllAnniversaries()" style="padding: 8px 16px; background: #ffc107; color: #000; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
-                        🔄 Recalculate All Anniversary Dates
+                <div class="setup-row">
+                    <div>
+                        <label for="publicKey">Public Key</label>
+                        <input type="text" id="publicKey" placeholder="Your public key">
+                    </div>
+                    <div>
+                        <label for="serviceId">Service ID</label>
+                        <input type="text" id="serviceId" placeholder="service_abc123">
+                    </div>
+                </div>
+                <div class="setup-row">
+                    <div>
+                        <label for="templateId">Collection Template ID</label>
+                        <input type="text" id="templateId" placeholder="template_i9qb3xr">
+                    </div>
+                    <div>
+                        <label for="followUpTemplateId">Anniversary Template ID</label>
+                        <input type="text" id="followUpTemplateId" placeholder="template_rkixehc">
+                    </div>
+                </div>
+                <div class="setup-row">
+                    <div>
+                        <label>
+                            <input type="checkbox" id="testMode" onchange="toggleTestMode()"> 
+                            🧪 1-Minute Test Mode (Anniversary emails sent 1 minute after collection)
+                        </label>
+                        <br>
+                        <button onclick="recalculateAllAnniversaries()" style="margin-top: 10px; padding: 6px 12px; background: #ffc107; color: #000; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                            🔄 Recalculate All Anniversary Dates
+                        </button>
+                    </div>
+                    <div style="display: flex; align-items: end;">
+                        <button onclick="saveConfig()" style="padding: 8px 16px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
+                            Save Config
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Data Backup & Restore Section -->
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #BFAEA1;">
+                    <h4 style="color: #2E2E2E; margin-bottom: 10px;">💾 Data Backup & Restore</h4>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Export your data to keep it safe or transfer to a new phone. Import to restore your orders and settings.</p>
+                    
+                    <!-- Mobile-Friendly Copy Button -->
+                    <button onclick="copyDataToClipboard()" style="padding: 12px 16px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-bottom: 10px;">
+                        📋 Copy All Data to Clipboard (Mobile Friendly)
                     </button>
                     
-                    <!-- Data Backup & Restore Section -->
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #BFAEA1;">
-                        <h4 style="color: #2E2E2E; margin-bottom: 10px;">💾 Data Backup & Restore</h4>
-                        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Export your data to keep it safe or transfer to another device/app version.</p>
-                        
-                        <!-- Mobile-Friendly Copy Button -->
-                        <button onclick="copyDataToClipboard()" style="padding: 12px 16px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-bottom: 10px;">
-                            📋 Copy All Data to Clipboard (Mobile Friendly)
-                        </button>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <button onclick="exportAllData()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                    <div class="setup-row">
+                        <div>
+                            <button onclick="exportAllData()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
                                 📤 Export File
                             </button>
-                            <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                        </div>
+                        <div>
+                            <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
                                 📥 Import File
                             </button>
                             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importAllData(event)">
                         </div>
-                        
-                        <!-- Paste Import for Mobile -->
-                        <button onclick="showPasteImport()" style="padding: 10px 16px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 10px;">
-                            📝 Paste Data to Import (Mobile Friendly)
+                    </div>
+                    
+                    <!-- Paste Import for Mobile -->
+                    <button onclick="showPasteImport()" style="padding: 10px 16px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 10px;">
+                        📝 Paste Data to Import (Mobile Friendly)
+                    </button>
+                    <div id="pasteImportArea" style="display: none; margin-top: 10px;">
+                        <textarea id="pasteDataInput" placeholder="Paste your backup data here..." style="width: 100%; height: 100px; padding: 10px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px;"></textarea>
+                        <button onclick="importFromPaste()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 5px;">
+                            ✅ Import Pasted Data
                         </button>
-                        <div id="pasteImportArea" style="display: none; margin-top: 10px;">
-                            <textarea id="pasteDataInput" placeholder="Paste your backup data here..." style="width: 100%; height: 100px; padding: 10px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px;"></textarea>
-                            <button onclick="importFromPaste()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 5px;">
-                                ✅ Import Pasted Data
-                            </button>
-                        </div>
                     </div>
                     
                     <!-- Cloud Sync Section -->
                     <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #C9A13C;">
-                        <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync (https://script.google.com/macros/s/AKfycbwbBjbtNyxo_54ATr2QClw04yCGhn7XT8lSv_HqS85UdsGAu2m2gXbUYFehMZpcdBqb/exec)</h4>
+                        <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync (Google Sheets)</h4>
                         <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Sync your data to Google Sheets for automatic backup and access from any device.</p>
                         
                         <div style="margin-bottom: 10px;">
@@ -592,26 +624,37 @@
                             <input type="text" id="googleSheetsUrl" placeholder="https://script.google.com/macros/s/.../exec" style="width: 100%; padding: 8px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px; margin-top: 5px;">
                         </div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                            <button onclick="testCloudConnection()" style="padding: 10px 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                                🔌 Test Connection
-                            </button>
-                            <button onclick="saveCloudConfig()" style="padding: 10px 16px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                                💾 Save URL
-                            </button>
+                        <div class="setup-row" style="margin-bottom: 10px;">
+                            <div>
+                                <button onclick="testCloudConnection()" style="padding: 10px 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
+                                    🔌 Test Connection
+                                </button>
+                            </div>
+                            <div>
+                                <button onclick="saveCloudConfig()" style="padding: 10px 16px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
+                                    💾 Save URL
+                                </button>
+                            </div>
                         </div>
                         
-                        <button onclick="syncToCloud()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-bottom: 8px;">
-                            🔄 Sync (Merge Both)
+                        <button onclick="syncToCloud()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+                            🔄 Sync Now (Smart Merge)
                         </button>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <button onclick="pushToCloud()" style="padding: 10px 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                ⬆️ Push (Overwrite Cloud)
-                            </button>
-                            <button onclick="pullFromCloud()" style="padding: 10px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                ⬇️ Pull (Overwrite Local)
-                            </button>
+                        <!-- Push/Pull Buttons for One-Way Sync -->
+                        <div class="setup-row" style="margin-top: 10px;">
+                            <div>
+                                <button onclick="pushToCloud()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
+                                    ⬆️ Push to Cloud
+                                </button>
+                                <p style="font-size: 10px; color: #888; margin-top: 3px;">Overwrites cloud with local</p>
+                            </div>
+                            <div>
+                                <button onclick="pullFromCloud()" style="padding: 10px 16px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
+                                    ⬇️ Pull from Cloud
+                                </button>
+                                <p style="font-size: 10px; color: #888; margin-top: 3px;">Overwrites local with cloud</p>
+                            </div>
                         </div>
                         
                         <div id="syncStatus" style="margin-top: 10px; padding: 10px; border-radius: 5px; font-size: 12px; display: none;"></div>
@@ -640,9 +683,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="customerPhone">Customer Phone (WhatsApp) *</label>
-                    <input type="tel" id="customerPhone" required placeholder="e.g., +1234567890 or 1234567890">
-                    <small style="color: #666; font-size: 0.8em;">Required for WhatsApp messages. Include country code for international numbers.</small>
+                    <label for="customerEmail">Customer Email *</label>
+                    <input type="email" id="customerEmail" required placeholder="customer@example.com">
                 </div>
 
                 <div class="form-group">
@@ -673,7 +715,7 @@
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    Save Order 🎂
+                    Send Cake Order Email
                 </button>
             </form>
 
@@ -715,7 +757,7 @@
                     <ol>
                         <li><strong>Configure EmailJS:</strong> Click "Show Email Config", enter your EmailJS credentials, and save</li>
                         <li><strong>Add Orders:</strong> Fill customer details and submit orders</li>
-                        <li><strong>Send Collection Notice:</strong> Choose Email or WhatsApp when cake is ready</li>
+                        <li><strong>Send Collection Notice:</strong> Click "Cake is Ready" when cake is finished</li>
                         <li><strong>Anniversary Management:</strong> Use Anniversary Email Management for automated customer retention</li>
                     </ol>
 
@@ -752,8 +794,8 @@
                     <h4>🎯 Complete Order Workflow</h4>
                     <ol>
                         <li><strong>Order Submitted:</strong> Customer details captured in system</li>
-                        <li><strong>Cake Ready:</strong> Choose "📧 Send Collection Email" or "💬 Send WhatsApp Message"</li>
-                        <li><strong>Collection Notice:</strong> Message sent with pickup details and social media links</li>
+                        <li><strong>Cake Ready:</strong> Click "🎂 Cake is Ready - Send Collection Notice"</li>
+                        <li><strong>Collection Notice:</strong> Email sent with pickup details and social media</li>
                         <li><strong>Order Archives:</strong> Moves to anniversary management system</li>
                         <li><strong>Anniversary Marketing:</strong> Automated countdown to 323-day anniversary</li>
                         <li><strong>Customer Retention:</strong> Send personalized anniversary emails or skip customers</li>
@@ -814,10 +856,9 @@
 
                     <h4>📦 Key Components</h4>
                     <ul>
-                        <li><strong>Order Form:</strong> Customer data collection with validation and phone numbers</li>
-                        <li><strong>Order Management:</strong> Active order display with email and WhatsApp controls</li>
-                        <li><strong>Anniversary System:</strong> Automated countdown with dual messaging options</li>
-                        <li><strong>WhatsApp Integration:</strong> Direct messaging via WhatsApp web/app links</li>
+                        <li><strong>Order Form:</strong> Customer data collection with validation</li>
+                        <li><strong>Order Management:</strong> Active order display with collection controls</li>
+                        <li><strong>Anniversary System:</strong> Automated countdown and email management</li>
                         <li><strong>Configuration Panel:</strong> EmailJS credentials and test mode settings</li>
                         <li><strong>Statistics Dashboard:</strong> Real-time anniversary status tracking</li>
                     </ul>
@@ -827,9 +868,7 @@
                         <li><strong>Real-Time Updates:</strong> Auto-refresh every 1-5 seconds based on mode</li>
                         <li><strong>Persistent Storage:</strong> Anniversary dates stored permanently to survive refreshes</li>
                         <li><strong>Dual Timing:</strong> 323-day production vs 1-minute test mode</li>
-                        <li><strong>Dual Messaging:</strong> Email (EmailJS) and WhatsApp (wa.me links)</li>
                         <li><strong>Smart Button States:</strong> Disabled/enabled based on countdown status</li>
-                        <li><strong>Phone Validation:</strong> Automatic phone number cleaning and validation</li>
                         <li><strong>Error Handling:</strong> Comprehensive try/catch with user feedback</li>
                         <li><strong>Debug Logging:</strong> Console output for troubleshooting</li>
                     </ul>
@@ -849,7 +888,6 @@
   id: timestamp,
   customerName: string,
   customerEmail: string,
-  customerPhone: string,              // NEW: WhatsApp phone number
   cakeType: string,
   collectionDate: YYYY-MM-DD,
   collectionTime: HH:MM,
@@ -857,11 +895,9 @@
   orderDate: YYYY-MM-DD,
   emailSent: boolean,
   thankYouSent: boolean,
-  whatsappSent: boolean,              // NEW: Collection WhatsApp sent
   thankYouSentTime: ISO string,
   anniversaryDate: ISO string,
   anniversarySent: boolean,
-  anniversaryWhatsappSent: boolean,   // NEW: Anniversary WhatsApp sent
   anniversarySentDate: string,
   anniversarySkipped: boolean,
   anniversarySkippedDate: string
@@ -912,12 +948,34 @@
         </div>
     </div>
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
     <script>
+        let emailConfig = {
+            publicKey: '',
+            serviceId: '',
+            templateId: '',
+            followUpTemplateId: ''
+        };
+
         let orders = [];
         let testMode = false;
 
         // Load saved configuration
         function loadConfig() {
+            const saved = localStorage.getItem('miniAppEmailConfig');
+            if (saved) {
+                emailConfig = JSON.parse(saved);
+                document.getElementById('publicKey').value = emailConfig.publicKey || '';
+                document.getElementById('serviceId').value = emailConfig.serviceId || '';
+                document.getElementById('templateId').value = emailConfig.templateId || '';
+                document.getElementById('followUpTemplateId').value = emailConfig.followUpTemplateId || '';
+                
+                if (emailConfig.publicKey) {
+                    emailjs.init(emailConfig.publicKey);
+                }
+            }
 
             // Load saved orders
             const savedOrders = localStorage.getItem('miniAppOrders');
@@ -1058,6 +1116,47 @@
                 toggleBtn.textContent = 'Show Config';
             }
         }
+
+        // Save configuration
+        function saveConfig() {
+            emailConfig.publicKey = document.getElementById('publicKey').value.trim();
+            emailConfig.serviceId = document.getElementById('serviceId').value.trim();
+            emailConfig.templateId = document.getElementById('templateId').value.trim();
+            emailConfig.followUpTemplateId = document.getElementById('followUpTemplateId').value.trim();
+
+            // Validate Service ID format
+            if (emailConfig.serviceId && !emailConfig.serviceId.startsWith('service_')) {
+                showStatus('⚠️ Service ID should start with "service_". Please check your EmailJS dashboard.', 'error');
+                return;
+            }
+
+            // Validate Template ID format
+            if (emailConfig.templateId && !emailConfig.templateId.startsWith('template_')) {
+                showStatus('⚠️ Template ID should start with "template_". Please check your EmailJS dashboard.', 'error');
+                return;
+            }
+
+            // Validate Public Key (should be alphanumeric, minimum 10 characters)
+            if (emailConfig.publicKey && (emailConfig.publicKey.length < 10 || !/^[a-zA-Z0-9_-]+$/.test(emailConfig.publicKey))) {
+                showStatus('⚠️ Public Key format appears invalid. Please check your EmailJS dashboard.', 'error');
+                return;
+            }
+
+            if (emailConfig.publicKey && emailConfig.serviceId && emailConfig.templateId) {
+                localStorage.setItem('miniAppEmailConfig', JSON.stringify(emailConfig));
+                
+                // Initialize EmailJS with new public key
+                try {
+                    emailjs.init(emailConfig.publicKey);
+                    showStatus('✅ Configuration saved and EmailJS initialized successfully!', 'success');
+                } catch (error) {
+                    showStatus('❌ Invalid Public Key. Please check your EmailJS dashboard.', 'error');
+                }
+            } else {
+                showStatus('⚠️ Please fill in at least Public Key, Service ID, and Template ID', 'error');
+            }
+        }
+
         // Show status message
         function showStatus(message, type, autoHide = true) {
             const statusDiv = document.getElementById('statusMessage');
@@ -1077,17 +1176,23 @@
         document.getElementById('collectionDate').min = today;
 
         // Handle form submission
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Check if email is configured
+            if (!emailConfig.publicKey || !emailConfig.serviceId || !emailConfig.templateId) {
+                showStatus('⚠️ Please configure email settings first!', 'error');
+                return;
+            }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<div class="spinner"></div> Saving Order...';
+            submitBtn.innerHTML = '<div class="spinner"></div> Sending Email...';
 
             // Get form data
             const orderData = {
                 customerName: document.getElementById('customerName').value,
-                customerPhone: document.getElementById('customerPhone').value,
+                customerEmail: document.getElementById('customerEmail').value,
                 cakeType: document.getElementById('cakeType').value,
                 orderDetails: document.getElementById('orderDetails').value || 'No special requests',
                 collectionDate: document.getElementById('collectionDate').value,
@@ -1095,53 +1200,73 @@
                 orderDate: new Date().toLocaleDateString()
             };
 
-            // Generate order number in format YYYYMM_XX
-            const now = new Date();
-            const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-            
-            // Find the highest order number for this month
-            const currentMonthOrders = orders.filter(o => 
-                typeof o.id === 'string' && o.id.startsWith(yearMonth)
-            );
-            
-            let nextNumber = 1;
-            if (currentMonthOrders.length > 0) {
-                const numbers = currentMonthOrders.map(o => {
-                    const parts = o.id.split('_');
-                    return parts.length > 1 ? parseInt(parts[1]) : 0;
-                });
-                nextNumber = Math.max(...numbers) + 1;
+            // Format collection date
+            const formattedDate = new Date(orderData.collectionDate + 'T00:00:00').toLocaleDateString('en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            try {
+                // Prepare email data with exact variable names
+                const templateParams = {
+                    customer_name: orderData.customerName,
+                    customer_email: orderData.customerEmail,
+                    cake_type: orderData.cakeType,
+                    order_details: orderData.orderDetails,
+                    collection_date: formattedDate,
+                    collection_time: orderData.collectionTime,
+                    to_email: orderData.customerEmail,
+                    reply_to: orderData.customerEmail,
+                    instagram_link: '📸 Follow us on Instagram: https://www.instagram.com/laduncakes',
+                    tiktok_link: '🎵 Watch us on TikTok: https://www.tiktok.com/@laduncakes',
+                    facebook_link: '👍 Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr',
+                    google_review_link: '⭐ Google Review: https://g.page/r/Cbv3t2r3bnosEAE/review',
+                    business_name: 'LaDun Cakes'
+                };
+                
+                console.log('Template parameters being sent:', templateParams);
+                console.log('Service ID:', emailConfig.serviceId);
+                console.log('Public Key:', emailConfig.publicKey);
+
+                // For initial order confirmation, we'll just store the order and show success
+                // The actual thank you email will be sent using template_i9qb3xr later
+                console.log('Order confirmed - templates reserved for follow-up emails');
+                
+                console.log('Order confirmed - templates reserved for follow-up emails');
+
+                // Store the order without sending initial email to preserve templates
+                const order = {
+                    id: Date.now(),
+                    customerName: orderData.customerName,
+                    customerEmail: orderData.customerEmail,
+                    cakeType: orderData.cakeType,
+                    orderDetails: orderData.orderDetails,
+                    collectionDate: orderData.collectionDate,
+                    collectionTime: orderData.collectionTime,
+                    orderDate: new Date().toLocaleDateString(),
+                    emailSent: true, // Order confirmed in system
+                    thankYouSent: false,
+                    anniversarySent: false
+                };
+
+                orders.unshift(order);
+                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                displayOrders();
+
+                showStatus(`🎂 Order confirmed for ${orderData.customerEmail}! Thank you email will be available 2 hours before collection.`, 'success');
+                
+                // Reset form
+                document.getElementById('orderForm').reset();
+                
+            } catch (error) {
+                console.error('Order processing error:', error);
+                showStatus(`❌ Failed to process order: ${error.message || 'Unknown error'}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Send Cake Order Email 🎂';
             }
-            
-            const orderId = `${yearMonth}_${String(nextNumber).padStart(2, '0')}`;
-            
-            // Store the order
-            const order = {
-                id: orderId,
-                customerName: orderData.customerName,
-                customerPhone: orderData.customerPhone,
-                cakeType: orderData.cakeType,
-                orderDetails: orderData.orderDetails,
-                collectionDate: orderData.collectionDate,
-                collectionTime: orderData.collectionTime,
-                orderDate: new Date().toLocaleDateString(),
-                thankYouSent: false,
-                whatsappSent: false,
-                anniversarySent: false,
-                anniversaryWhatsappSent: false
-            };
-
-            orders.unshift(order);
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            displayOrders();
-
-            showStatus(`🎂 Order saved for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
-            
-            // Reset form
-            document.getElementById('orderForm').reset();
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Save Order 🎂';
         });
 
         // Display orders function
@@ -1152,8 +1277,8 @@
             // Load config to check test mode
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
             
-            // Filter out orders that have had collection notice sent via WhatsApp
-            const visibleOrders = orders.filter(order => !order.whatsappSent);
+            // Filter out orders that have had collection notice sent
+            const visibleOrders = orders.filter(order => !order.thankYouSent);
             
             if (visibleOrders.length === 0) {
                 ordersSection.style.display = 'none';
@@ -1203,11 +1328,11 @@
                     <div class="order-card">
                         <h3>
                             ${order.customerName} - ${order.cakeType}
-                            <span class="status-badge ${order.whatsappSent ? 'status-completed' : 'status-pending'}">
-                                ${order.whatsappSent ? 'Order Confirmed' : 'Pending'}
+                            <span class="status-badge ${order.emailSent ? 'status-completed' : 'status-pending'}">
+                                ${order.emailSent ? 'Order Confirmed' : 'Pending'}
                             </span>
                         </h3>
-                        <p><strong>� Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
+                        <p><strong>📧 Email:</strong> ${order.customerEmail}</p>
                         <p><strong>🎂 Cake Type:</strong> ${order.cakeType}</p>
                         <p><strong>📅 Collection:</strong> ${formatDate(order.collectionDate)} at ${order.collectionTime}</p>
                         <p><strong>📝 Details:</strong> ${order.orderDetails || 'No special requests'}</p>
@@ -1219,34 +1344,30 @@
                         
                         <div style="margin-top: 15px;">
                             ${isReadyToSend ? `
-                                ${order.customerPhone ? `
-                                    <button 
-                                        class="follow-up-btn" 
-                                        onclick="sendCollectionWhatsApp('${order.id}')"
-                                        style="background: #25d366; margin-right: 10px; color: white;">
-                                        💬 Send Collection WhatsApp
-                                    </button>
-                                ` : '<span style="color: #999;">⚠️ No phone number</span>'}
-                            ` : order.whatsappSent ? `
+                                <button 
+                                    class="follow-up-btn" 
+                                    onclick="sendThankYouEmail(${order.id})"
+                                    style="background: #28a745; margin-right: 10px;">
+                                    🎂 Cake is Ready - Send Collection Notice
+                                </button>
+                            ` : order.thankYouSent ? `
                                 <span style="color: #28a745; font-weight: bold;">✅ Collection Notice Sent</span>
                             ` : isPastCollection ? `
                                 <span style="color: #999; font-style: italic;">⏰ Collection date passed</span>
                             ` : ''}
                             
-                            ${order.whatsappSent && isAnniversaryTime && !order.anniversarySkipped ? `
-                                ${order.customerPhone ? `
-                                    <button 
-                                        class="follow-up-btn" 
-                                        onclick="sendAnniversaryWhatsApp('${order.id}')"
-                                        style="background: #25d366; margin-right: 10px; color: white;">
-                                        💬 Send Anniversary WhatsApp
-                                    </button>
-                                ` : '<span style="color: #999;">⚠️ No phone number</span>'}
-                            ` : order.anniversaryWhatsappSent ? `
+                            ${order.thankYouSent && isAnniversaryTime && !order.anniversarySkipped ? `
+                                <button 
+                                    class="follow-up-btn" 
+                                    onclick="sendAnniversaryEmail(${order.id})"
+                                    style="background: #9b59b6; margin-left: 10px;">
+                                    🎉 Send Anniversary Email (Manual)
+                                </button>
+                            ` : order.anniversarySent ? `
                                 <span style="color: #9b59b6; font-weight: bold; margin-left: 10px;">✅ Anniversary Sent</span>
                             ` : order.anniversarySkipped ? `
                                 <span style="color: #666; font-style: italic; margin-left: 10px;">❌ Anniversary Skipped</span>
-                            ` : order.whatsappSent ? `
+                            ` : order.thankYouSent ? `
                                 <span style="color: #666; font-style: italic; margin-left: 10px;">
                                     🎂 Anniversary available: ${formatDate(anniversaryDate.toISOString().split('T')[0])}
                                 </span>
@@ -1268,193 +1389,175 @@
             });
         }
 
-        // WhatsApp Message Templates
-        function getOrderConfirmationMessage(order) {
-            return `Dear ${order.customerName},
-
-Thank you so much for choosing Ladun Cakes! We're thrilled to be part of your special celebration. ✨
-
-Your order has been received and we'll begin creating your beautiful ${order.cakeType} with the finest ingredients, artistry, and care.
-
-Order Details
-• Cake Type: ${order.cakeType}
-• Collection Date: ${formatDate(order.collectionDate)}
-• Collection Time: ${order.collectionTime}
-${order.orderDetails && order.orderDetails !== 'No special requests' ? `• Special Requests: ${order.orderDetails}` : ''}
-
-We'll send you another message when your cake is ready for collection.
-
-Stay connected with us:
-
-📸 Follow us on Instagram: https://www.instagram.com/laduncakes
-🎵 Watch us on TikTok: https://www.tiktok.com/@laduncakes
-👍 Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr
-
-With love,
-Ladun Cakes`;
-        }
-
-        function getCollectionMessage(order) {
-            return `Dear ${order.customerName},
-
-Thank you so much for choosing Ladun Cakes to be part of your special day. It's been an absolute pleasure creating something truly beautiful for your celebration.
-
-Your cake has been lovingly handcrafted and here are your order details.
-
-Order Details
-• Cake Type: ${order.cakeType}
-• Collection Date: ${formatDate(order.collectionDate)}
-• Collection Time: ${order.collectionTime}
-${order.orderDetails && order.orderDetails !== 'No special requests' ? `• Special Requests & Order Details: ${order.orderDetails}` : ''}
-
-Each of our cakes is created with the finest ingredients, artistry, and care — designed to bring a touch of elegance and joy to your most meaningful moments. We can't wait for you to see (and taste!) your gorgeous cake. ✨
-
-We'd love for you to stay connected — follow us on social media and share your experience. Your kind words and photos mean so much to us.
-
-Follow us on Instagram: https://www.instagram.com/laduncakes
-Watch us on TikTok: https://www.tiktok.com/@laduncakes
-Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr
-Google Review: https://g.page/r/Cbv3t2r3bnosEAE/review
-Website: https://laduncakes.co.uk/
-
-With love,
-Ladun Cakes`;
-        }
-
-        function getAnniversaryMessage(order) {
-            return `Dear ${order.customerName},
-
-We hope you've been doing beautifully. As we celebrate the anniversary of your special day, we wanted to take a moment to send our warmest wishes your way. ✨
-
-It was such a joy to create your ${order.cakeType} on ${formatDate(order.collectionDate)}, and we'd love to be part of your celebrations again — this time, with a bespoke Ladun Cake made especially for your upcoming occasions.
-
-Each of our cakes is handcrafted with care, artistry, and a touch of elegance — perfect for making your day as memorable (and delicious!) as it deserves to be.
-
-You can place your order easily by contacting us, and we'll handle every detail with love.
-
-Stay connected with us and see our latest creations:
-
-Follow us on Instagram: https://www.instagram.com/laduncakes
-Watch us on TikTok: https://www.tiktok.com/@laduncakes
-Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr
-
-With love and sweet wishes,
-Ladun Cakes`;
-        }
-
-        // WhatsApp Functions
-        function sendCollectionWhatsApp(orderId) {
+        // Send follow-up thank you email
+        async function sendThankYouEmail(orderId) {
             const order = orders.find(o => o.id === orderId);
             if (!order) return;
 
-            if (!order.customerPhone) {
-                showStatus('❌ No phone number provided for this customer.', 'error');
+            if (!emailConfig.templateId) {
+                showStatus('⚠️ Please configure the Template ID in email settings.', 'error');
+                toggleSetup();
                 return;
             }
 
-            // Clean phone number (remove spaces, dashes, etc.)
-            const cleanPhone = order.customerPhone.replace(/[^\d+]/g, '');
-            
-            // Get message from template
-            const message = getCollectionMessage(order);
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Sending...';
 
-            // Create WhatsApp URL - works better on mobile
-            const cleanPhoneForUrl = cleanPhone.startsWith('+') ? cleanPhone.substring(1) : cleanPhone;
-            const whatsappUrl = `https://wa.me/${cleanPhoneForUrl}?text=${encodeURIComponent(message)}`;
-            
-            // Try multiple methods to open WhatsApp (better mobile compatibility)
             try {
-                // First try: window.location for better mobile support
-                window.location.href = whatsappUrl;
-            } catch (e) {
-                // Fallback: window.open
-                window.open(whatsappUrl, '_blank');
+                const templateParams = {
+                    customer_name: order.customerName,
+                    customer_email: order.customerEmail,
+                    cake_type: order.cakeType,
+                    order_details: order.orderDetails || 'No special requests',
+                    collection_date: formatDate(order.collectionDate),
+                    collection_time: order.collectionTime,
+                    to_email: order.customerEmail,
+                    reply_to: order.customerEmail,
+                    instagram_link: '📸 Follow us on Instagram: https://www.instagram.com/laduncakes',
+                    tiktok_link: '🎵 Watch us on TikTok: https://www.tiktok.com/@laduncakes',
+                    facebook_link: '👍 Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr',
+                    google_review_link: '⭐ Google Review: https://g.page/r/Cbv3t2r3bnosEAE/review',
+                    business_name: 'LaDun Cakes'
+                };
+
+                await emailjs.send(
+                    emailConfig.serviceId,
+                    emailConfig.templateId,
+                    templateParams
+                );
+
+                order.thankYouSent = true;
+                order.thankYouSentTime = new Date().toISOString(); // Save timestamp for test mode anniversary calculation
+                
+                // Calculate and store the actual anniversary date permanently
+                const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
+                const testMode = config.testMode || false;
+                
+                if (testMode) {
+                    // Test mode: 1 minute after collection notice sent
+                    const anniversaryDate = new Date();
+                    anniversaryDate.setMinutes(anniversaryDate.getMinutes() + 1);
+                    order.anniversaryDate = anniversaryDate.toISOString();
+                } else {
+                    // Normal mode: 323 days after collection date
+                    const collectionDate = new Date(order.collectionDate + 'T12:00:00');
+                    const anniversaryDate = new Date(collectionDate);
+                    anniversaryDate.setDate(anniversaryDate.getDate() + 323);
+                    order.anniversaryDate = anniversaryDate.toISOString();
+                }
+                
+                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                
+                showStatus('🎂 Collection notice sent successfully! Order completed and archived.', 'success');
+                
+                // Update display after a brief delay to show the order disappearing
+                setTimeout(() => {
+                    displayOrders();
+                }, 1000);
+                
+                // Auto-hide the message after 4 seconds
+                setTimeout(() => {
+                    const statusDiv = document.getElementById('statusMessage');
+                    statusDiv.style.display = 'none';
+                }, 4000);
+
+            } catch (error) {
+                console.error('Thank you email error:', error);
+                showStatus(`❌ Failed to send collection notice: ${error.text || error.message}`, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '🎂 Cake is Ready - Send Collection Notice';
             }
+        }
+
+        // Send anniversary reminder email
+        async function sendAnniversaryEmail(orderId, buttonElement = null) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            if (!emailConfig.followUpTemplateId) {
+                showStatus('⚠️ Please configure the Anniversary Template ID in email settings.', 'error');
+                toggleSetup();
+                return;
+            }
+
+            console.log('Sending anniversary email with template ID:', emailConfig.followUpTemplateId);
+            console.log('Expected template ID: template_rkixehc');
+            console.log('Service ID:', emailConfig.serviceId);
             
-            showStatus(`💬 Collection WhatsApp opened for ${order.customerName}!`, 'success');
-            
-            // Mark as sent and calculate anniversary date
-            order.whatsappSent = true;
-            order.whatsappSentTime = new Date().toISOString();
-            
-            // Calculate and store the anniversary date
-            const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            const testMode = config.testMode || false;
-            
-            if (testMode) {
-                // Test mode: 1 minute after collection notice sent
-                const anniversaryDate = new Date();
-                anniversaryDate.setMinutes(anniversaryDate.getMinutes() + 1);
-                order.anniversaryDate = anniversaryDate.toISOString();
-            } else {
-                // Normal mode: 323 days after collection date
-                const collectionDate = new Date(order.collectionDate + 'T12:00:00');
+            // Verify we're using the correct anniversary template
+            if (emailConfig.followUpTemplateId !== 'template_rkixehc') {
+                console.warn('WARNING: Not using expected anniversary template ID!');
+                console.warn('Current:', emailConfig.followUpTemplateId);
+                console.warn('Expected: template_rkixehc');
+            }
+
+            // Get button reference - either passed or from event
+            const btn = buttonElement || event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Sending...';
+
+            try {
+                // Calculate anniversary date
+                const collectionDate = new Date(order.collectionDate + 'T' + (order.collectionTime || '00:00'));
                 const anniversaryDate = new Date(collectionDate);
                 anniversaryDate.setDate(anniversaryDate.getDate() + 323);
-                order.anniversaryDate = anniversaryDate.toISOString();
+
+                const templateParams = {
+                    customer_name: order.customerName,
+                    customer_email: order.customerEmail,
+                    cake_type: order.cakeType,
+                    order_details: order.orderDetails || 'No special requests',
+                    original_collection_date: formatDate(order.collectionDate),
+                    anniversary_date: formatDate(anniversaryDate.toISOString().split('T')[0]),
+                    to_email: order.customerEmail,
+                    reply_to: order.customerEmail,
+                    instagram_link: '📸 Follow us on Instagram: https://www.instagram.com/laduncakes',
+                    tiktok_link: '🎵 Watch us on TikTok: https://www.tiktok.com/@laduncakes',
+                    facebook_link: '👍 Like us on Facebook: https://www.facebook.com/share/178PimAdRz/?mibextid=wwXIfr',
+                    google_review_link: '⭐ Google Review: https://g.page/r/Cbv3t2r3bnosEAE/review',
+                    business_name: 'LaDun Cakes'
+                };
+
+                console.log('Anniversary email template parameters:', templateParams);
+                console.log('About to send anniversary email...');
+
+                await emailjs.send(
+                    emailConfig.serviceId,
+                    emailConfig.followUpTemplateId,
+                    templateParams
+                );
+
+                console.log('Anniversary email sent successfully!');
+
+                order.anniversarySent = true;
+                order.anniversarySentDate = new Date().toLocaleString();
+                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                
+                showStatus(`🎉 Anniversary email sent successfully to ${order.customerName}!`, 'success');
+                
+                // Update displays after a brief delay
+                setTimeout(() => {
+                    displayOrders();
+                    // Also refresh anniversary manager if it's open
+                    const manager = document.getElementById('anniversaryManager');
+                    if (manager.style.display !== 'none') {
+                        displayAnniversaryOrders();
+                    }
+                }, 1000);
+                
+                // Auto-hide the message after 4 seconds
+                setTimeout(() => {
+                    const statusDiv = document.getElementById('statusMessage');
+                    statusDiv.style.display = 'none';
+                }, 4000);
+
+            } catch (error) {
+                console.error('Anniversary email error:', error);
+                showStatus(`❌ Failed to send anniversary email: ${error.text || error.message}`, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '🎉 Send Anniversary Email';
             }
-            
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            setTimeout(() => {
-                displayOrders();
-            }, 1000);
-            
-            // Auto-hide the message after 4 seconds
-            setTimeout(() => {
-                const statusDiv = document.getElementById('statusMessage');
-                statusDiv.style.display = 'none';
-            }, 4000);
-        }
-
-        function sendAnniversaryWhatsApp(orderId) {
-            const order = orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            if (!order.customerPhone) {
-                showStatus('❌ No phone number provided for this customer.', 'error');
-                return;
-            }
-
-            // Clean phone number
-            const cleanPhone = order.customerPhone.replace(/[^\d+]/g, '');
-            
-            // Get message from template
-            const message = getAnniversaryMessage(order);
-
-            // Create WhatsApp URL - works better on mobile
-            const cleanPhoneForUrl = cleanPhone.startsWith('+') ? cleanPhone.substring(1) : cleanPhone;
-            const whatsappUrl = `https://wa.me/${cleanPhoneForUrl}?text=${encodeURIComponent(message)}`;
-            
-            // Try multiple methods to open WhatsApp (better mobile compatibility)
-            try {
-                // First try: window.location for better mobile support
-                window.location.href = whatsappUrl;
-            } catch (e) {
-                // Fallback: window.open
-                window.open(whatsappUrl, '_blank');
-            }
-            
-            // Mark as sent
-            order.anniversaryWhatsappSent = true;
-            order.anniversarySentDate = new Date().toLocaleString();
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            showStatus(`🎉 Anniversary WhatsApp opened for ${order.customerName}!`, 'success');
-            
-            setTimeout(() => {
-                displayOrders();
-                const manager = document.getElementById('anniversaryManager');
-                if (manager.style.display !== 'none') {
-                    displayAnniversaryOrders();
-                }
-            }, 1000);
-            
-            // Auto-hide the message after 4 seconds
-            setTimeout(() => {
-                const statusDiv = document.getElementById('statusMessage');
-                statusDiv.style.display = 'none';
-            }, 4000);
         }
 
         // Auto-refresh anniversary management every 5 seconds to update countdowns
@@ -1519,7 +1622,7 @@ Ladun Cakes`;
 
             // Filter and sort orders by collection date
             const ordersWithAnniversary = orders
-                .filter(order => order.whatsappSent && !order.anniversarySkipped && !order.anniversaryWhatsappSent) // Only show orders where collection notice was sent via WhatsApp AND not skipped AND not sent
+                .filter(order => order.thankYouSent && !order.anniversarySkipped && !order.anniversarySent) // Only show orders where collection notice was sent AND not skipped AND not sent
                 .map(order => {
                     let anniversaryDate;
                     
@@ -1529,9 +1632,9 @@ Ladun Cakes`;
                     } else {
                         // Fallback calculation for older orders without stored anniversary date
                         if (testMode) {
-                            // In test mode, anniversary is 1 minute after collection notice was sent via WhatsApp
-                            if (order.whatsappSentTime) {
-                                anniversaryDate = new Date(order.whatsappSentTime);
+                            // In test mode, anniversary is 1 minute after collection notice was sent
+                            if (order.thankYouSentTime) {
+                                anniversaryDate = new Date(order.thankYouSentTime);
                                 anniversaryDate.setMinutes(anniversaryDate.getMinutes() + 1);
                             } else {
                                 // Fallback: 1 minute from now
@@ -1566,12 +1669,12 @@ Ladun Cakes`;
                 .sort((a, b) => a.daysRemaining - b.daysRemaining); // Sort by days remaining (ready first)
 
             if (ordersWithAnniversary.length === 0) {
-                const totalWithCollection = orders.filter(order => order.whatsappSent).length;
+                const totalWithCollection = orders.filter(order => order.thankYouSent).length;
                 const skippedCount = orders.filter(order => order.anniversarySkipped).length;
-                const sentCount = orders.filter(order => order.anniversaryWhatsappSent).length;
+                const sentCount = orders.filter(order => order.anniversarySent).length;
                 
                 if (totalWithCollection === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No orders with collection WhatsApp sent yet. Send collection WhatsApp first to see anniversary management.</p>';
+                    container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No orders with collection notices sent yet. Send collection notices first to see anniversary management.</p>';
                 } else if (skippedCount + sentCount === totalWithCollection) {
                     container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">All anniversaries have been processed (sent or skipped). Create new orders to see more anniversary management.</p>';
                 } else {
@@ -1581,11 +1684,11 @@ Ladun Cakes`;
             }
 
             // Calculate stats from all orders (not just the filtered ones)
-            const allOrdersWithCollection = orders.filter(order => order.whatsappSent);
-            const readyToSend = ordersWithAnniversary.filter(o => o.isReady && !o.anniversaryWhatsappSent).length;
-            const alreadySent = allOrdersWithCollection.filter(o => o.anniversaryWhatsappSent).length;
+            const allOrdersWithCollection = orders.filter(order => order.thankYouSent);
+            const readyToSend = ordersWithAnniversary.filter(o => o.isReady && !o.anniversarySent).length;
+            const alreadySent = allOrdersWithCollection.filter(o => o.anniversarySent).length;
             const skipped = allOrdersWithCollection.filter(o => o.anniversarySkipped).length;
-            const waiting = ordersWithAnniversary.filter(o => !o.isReady && !o.anniversaryWhatsappSent).length;
+            const waiting = ordersWithAnniversary.filter(o => !o.isReady && !o.anniversarySent).length;
 
             const statsHtml = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
@@ -1668,8 +1771,8 @@ Ladun Cakes`;
                 }
 
                 let actionButtons;
-                if (order.anniversaryWhatsappSent) {
-                    actionButtons = `<div class="anniversary-status status-sent">✅ Anniversary WhatsApp Sent</div>`;
+                if (order.anniversarySent) {
+                    actionButtons = `<div class="anniversary-status status-sent">✅ Anniversary Email Sent</div>`;
                 } else if (order.anniversarySkipped) {
                     actionButtons = `
                         <div class="anniversary-status status-skipped">❌ Marked as Skip</div>
@@ -1680,15 +1783,13 @@ Ladun Cakes`;
                 } else {
                     actionButtons = `
                         <div class="anniversary-actions">
-                            ${order.customerPhone ? `
-                                <button onclick="sendAnniversaryWhatsAppFromManager('${order.id}', this)" 
-                                        class="anniversary-btn send-anniversary-btn"
-                                        ${!order.isReady ? 'disabled' : ''}
-                                        style="${order.isReady ? 'background: #25d366; color: white; font-weight: bold; animation: pulse 2s infinite; font-size: 1.1em; cursor: pointer; margin-right: 10px;' : 'background: #6c757d; color: #aaa; cursor: not-allowed; opacity: 0.5; margin-right: 10px;'}">
-                                    ${order.isReady ? '💬 Send WhatsApp NOW' : '⏳ Send WhatsApp (Not Ready)'}
-                                </button>
-                            ` : '<span style="color: #999; font-style: italic; margin-right: 10px;">⚠️ No phone number for WhatsApp</span>'}
-                            <button onclick="skipAnniversary('${order.id}')" 
+                            <button onclick="sendAnniversaryFromManager(${order.id}, this)" 
+                                    class="anniversary-btn send-anniversary-btn"
+                                    ${!order.isReady ? 'disabled' : ''}
+                                    style="${order.isReady ? 'background: #dc3545; color: white; font-weight: bold; animation: pulse 2s infinite; font-size: 1.1em; cursor: pointer; margin-right: 10px;' : 'background: #6c757d; color: #aaa; cursor: not-allowed; opacity: 0.5; margin-right: 10px;'}">
+                                ${order.isReady ? '� Send Anniversary Email NOW' : '⏳ Send Anniversary Email (Not Ready)'}
+                            </button>
+                            <button onclick="skipAnniversary(${order.id})" 
                                     class="anniversary-btn skip-anniversary-btn"
                                     ${!order.isReady ? 'disabled' : ''}
                                     style="${order.isReady ? 'background: #6c757d; color: white; font-weight: bold; cursor: pointer;' : 'background: #6c757d; color: #aaa; cursor: not-allowed; opacity: 0.5;'}">
@@ -1699,7 +1800,7 @@ Ladun Cakes`;
                 }
 
                 return `
-                    <div class="anniversary-card ${cardClass}" style="${order.isReady && !order.anniversaryWhatsappSent && !order.anniversarySkipped ? 'border: 3px solid #25d366; background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%); box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);' : ''}">
+                    <div class="anniversary-card ${cardClass}" style="${order.isReady && !order.anniversarySent && !order.anniversarySkipped ? 'border: 3px solid #dc3545; background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%); box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);' : ''}">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h3 style="margin: 0; color: #5f0f40;">${order.customerName} - ${order.cakeType}</h3>
                             <span style="font-size: 0.9em; color: #666;">Order #${order.id}</span>
@@ -1707,7 +1808,7 @@ Ladun Cakes`;
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div>
-                                <p><strong>� Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
+                                <p><strong>📧 Email:</strong> ${order.customerEmail}</p>
                                 <p><strong>📅 Collection Date:</strong> ${formatDate(order.collectionDate)}</p>
                                 <p><strong>🎂 Anniversary Date:</strong> ${formatDate(order.anniversaryDate.toISOString().split('T')[0])}</p>
                             </div>
@@ -1724,31 +1825,43 @@ Ladun Cakes`;
             }).join('');
         }
 
-        // WhatsApp Anniversary Manager Function
-        function sendAnniversaryWhatsAppFromManager(orderId, buttonElement) {
-            console.log('Send anniversary WhatsApp clicked for order:', orderId);
+        function sendAnniversaryFromManager(orderId, buttonElement) {
+            console.log('=== ANNIVERSARY EMAIL FUNCTION CALLED ===');
+            console.log('Send anniversary clicked for order:', orderId);
+            console.log('Button element:', buttonElement);
+            console.log('emailConfig:', emailConfig);
+            
+            // Ensure orderId is treated as a number for comparison
             const orderIdNum = parseInt(orderId);
+            console.log('Converted orderId to number:', orderIdNum);
             
             try {
-                // Use the existing sendAnniversaryWhatsApp function
-                sendAnniversaryWhatsApp(orderIdNum);
-                // Note: The main function handles display updates
+                // Use the existing sendAnniversaryEmail function with button reference
+                sendAnniversaryEmail(orderIdNum, buttonElement);
+                // Note: No need for separate setTimeout here as the main function handles display updates
             } catch (error) {
-                console.error('Error in sendAnniversaryWhatsAppFromManager:', error);
+                console.error('Error in sendAnniversaryFromManager:', error);
                 showStatus(`❌ Error: ${error.message}`, 'error');
             }
         }
 
         function skipAnniversary(orderId) {
-            if (confirm('Are you sure you want to skip sending anniversary WhatsApp to this customer? You can undo this later.')) {
-                const order = orders.find(o => o.id === orderId);
+            console.log('Skip anniversary clicked for order:', orderId);
+            const orderIdNum = parseInt(orderId);
+            console.log('Converted orderId to number:', orderIdNum);
+            
+            if (confirm('Are you sure you want to skip sending anniversary email to this customer? You can undo this later.')) {
+                const order = orders.find(o => o.id === orderIdNum);
+                console.log('Found order:', order);
                 if (order) {
                     order.anniversarySkipped = true;
                     order.anniversarySkippedDate = new Date().toLocaleString();
                     localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                    showStatus(`❌ Anniversary WhatsApp skipped for ${order.customerName}`, 'info');
+                    showStatus(`❌ Anniversary email skipped for ${order.customerName}`, 'info');
                     displayAnniversaryOrders();
                     displayOrders(); // Also refresh main display
+                } else {
+                    console.error('Order not found with ID:', orderIdNum);
                 }
             }
         }
@@ -1759,22 +1872,9 @@ Ladun Cakes`;
                 delete order.anniversarySkipped;
                 delete order.anniversarySkippedDate;
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                showStatus(`↩️ Anniversary WhatsApp option restored for ${order.customerName}`, 'success');
+                showStatus(`↩️ Anniversary email option restored for ${order.customerName}`, 'success');
                 displayAnniversaryOrders();
                 displayOrders(); // Also refresh main display
-            }
-        }
-
-        function sendAnniversaryWhatsAppFromManager(orderId, buttonElement) {
-            console.log('Send anniversary WhatsApp clicked for order:', orderId);
-            
-            try {
-                // Use the existing sendAnniversaryWhatsApp function
-                sendAnniversaryWhatsApp(orderId);
-                // Note: The main function handles display updates
-            } catch (error) {
-                console.error('Error in sendAnniversaryWhatsAppFromManager:', error);
-                showStatus(`❌ Error: ${error.message}`, 'error');
             }
         }
 
@@ -1833,7 +1933,8 @@ Ladun Cakes`;
             try {
                 const exportData = {
                     exportDate: new Date().toISOString(),
-                    appVersion: '1.0-whatsapp',
+                    appVersion: '1.0',
+                    emailConfig: JSON.parse(localStorage.getItem('miniAppEmailConfig') || '{}'),
                     orders: JSON.parse(localStorage.getItem('miniAppOrders') || '[]'),
                     appConfig: JSON.parse(localStorage.getItem('miniAppConfig') || '{}')
                 };
@@ -1873,8 +1974,8 @@ Ladun Cakes`;
                     const importData = JSON.parse(e.target.result);
                     
                     // Validate the data structure
-                    if (!importData.orders) {
-                        throw new Error('Invalid backup file format - no orders found');
+                    if (!importData.orders && !importData.emailConfig) {
+                        throw new Error('Invalid backup file format');
                     }
                     
                     // Confirm import
@@ -1884,6 +1985,19 @@ Ladun Cakes`;
                     if (!confirm(`Import data from backup?\n\n📅 Backup Date: ${exportDate}\n📦 Orders: ${orderCount}\n\n⚠️ This will REPLACE all current data!`)) {
                         event.target.value = '';
                         return;
+                    }
+                    
+                    // Import email config
+                    if (importData.emailConfig && Object.keys(importData.emailConfig).length > 0) {
+                        localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
+                        emailConfig = importData.emailConfig;
+                        document.getElementById('publicKey').value = emailConfig.publicKey || '';
+                        document.getElementById('serviceId').value = emailConfig.serviceId || '';
+                        document.getElementById('templateId').value = emailConfig.templateId || '';
+                        document.getElementById('followUpTemplateId').value = emailConfig.followUpTemplateId || '';
+                        if (emailConfig.publicKey) {
+                            emailjs.init(emailConfig.publicKey);
+                        }
                     }
                     
                     // Import orders
@@ -1899,11 +2013,6 @@ Ladun Cakes`;
                         if (importData.appConfig.testMode !== undefined) {
                             document.getElementById('testMode').checked = importData.appConfig.testMode;
                         }
-                    }
-                    
-                    // Import email config if present (for compatibility with email version)
-                    if (importData.emailConfig) {
-                        localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
                     }
                     
                     showStatus(`✅ Data imported successfully! ${orderCount} orders restored from ${exportDate}`, 'success');
@@ -1940,7 +2049,8 @@ Ladun Cakes`;
             try {
                 const exportData = {
                     exportDate: new Date().toISOString(),
-                    appVersion: '1.0-whatsapp',
+                    appVersion: '1.0',
+                    emailConfig: JSON.parse(localStorage.getItem('miniAppEmailConfig') || '{}'),
                     orders: JSON.parse(localStorage.getItem('miniAppOrders') || '[]'),
                     appConfig: JSON.parse(localStorage.getItem('miniAppConfig') || '{}')
                 };
@@ -2034,6 +2144,19 @@ Ladun Cakes`;
                     return;
                 }
                 
+                // Import email config
+                if (importData.emailConfig && Object.keys(importData.emailConfig).length > 0) {
+                    localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
+                    emailConfig = importData.emailConfig;
+                    document.getElementById('publicKey').value = emailConfig.publicKey || '';
+                    document.getElementById('serviceId').value = emailConfig.serviceId || '';
+                    document.getElementById('templateId').value = emailConfig.templateId || '';
+                    document.getElementById('followUpTemplateId').value = emailConfig.followUpTemplateId || '';
+                    if (emailConfig.publicKey) {
+                        emailjs.init(emailConfig.publicKey);
+                    }
+                }
+                
                 // Import orders
                 orders = importData.orders;
                 localStorage.setItem('miniAppOrders', JSON.stringify(orders));
@@ -2045,11 +2168,6 @@ Ladun Cakes`;
                     if (importData.appConfig.testMode !== undefined) {
                         document.getElementById('testMode').checked = importData.appConfig.testMode;
                     }
-                }
-                
-                // Import email config if present
-                if (importData.emailConfig) {
-                    localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
                 }
                 
                 // Clear paste area and hide it
@@ -2149,16 +2267,12 @@ Ladun Cakes`;
             showSyncStatus('🔄 Syncing with cloud...', 'info');
             
             try {
-                console.log('Starting sync with', orders.length, 'local orders');
-                
                 // Send local orders to cloud for smart merge
-                // Use no-cors mode and handle redirect for Google Apps Script
                 const response = await fetch(url, {
                     method: 'POST',
                     mode: 'cors',
-                    redirect: 'follow',
                     headers: {
-                        'Content-Type': 'text/plain'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         action: 'syncOrders',
@@ -2166,18 +2280,7 @@ Ladun Cakes`;
                     })
                 });
                 
-                console.log('Response status:', response.status);
-                const text = await response.text();
-                console.log('Response text:', text);
-                
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (parseError) {
-                    console.error('JSON parse error:', parseError, 'Text:', text);
-                    showSyncStatus('❌ Sync failed: Invalid response from server', 'error');
-                    return;
-                }
+                const data = await response.json();
                 
                 if (data.error) {
                     showSyncStatus('❌ Sync failed: ' + data.error, 'error');
@@ -2206,16 +2309,20 @@ Ladun Cakes`;
                 showSyncStatus('❌ Sync failed: ' + error.message, 'error');
             } finally {
                 syncBtn.disabled = false;
-                syncBtn.innerHTML = '🔄 Sync Now';
+                syncBtn.innerHTML = '🔄 Sync Now (Smart Merge)';
             }
         }
         
-        // Pull orders from cloud (download only)
+        // Pull orders from cloud (download only - OVERWRITES local data)
         async function pullFromCloud() {
             const url = document.getElementById('googleSheetsUrl').value.trim();
             
             if (!url) {
                 showSyncStatus('❌ Please configure Google Sheets URL first', 'error');
+                return;
+            }
+            
+            if (!confirm('Download orders from cloud?\n\n⚠️ This will REPLACE all local data!')) {
                 return;
             }
             
@@ -2231,16 +2338,23 @@ Ladun Cakes`;
                 
                 if (data.error) {
                     showSyncStatus('❌ Download failed: ' + data.error, 'error');
-                } else if (data.orders && data.orders.length > 0) {
-                    if (confirm(`Download ${data.orders.length} orders from cloud?\n\n⚠️ This will REPLACE all local data!`)) {
-                        orders = data.orders;
-                        localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                        displayOrders();
-                        updateLastSyncDisplay(data.lastSync);
-                        showSyncStatus(`✅ Downloaded ${data.orders.length} orders from cloud!`, 'success');
-                    }
                 } else {
-                    showSyncStatus('ℹ️ No orders found in cloud', 'info');
+                    orders = data.orders || [];
+                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
+                    displayOrders();
+                    
+                    const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
+                    config.lastSync = new Date().toISOString();
+                    localStorage.setItem('miniAppConfig', JSON.stringify(config));
+                    updateLastSyncDisplay(config.lastSync);
+                    
+                    showSyncStatus(`✅ Downloaded ${orders.length} orders from cloud!`, 'success');
+                    
+                    // Refresh anniversary display if visible
+                    const anniversaryManager = document.getElementById('anniversaryManager');
+                    if (anniversaryManager && anniversaryManager.style.display !== 'none') {
+                        displayAnniversaryOrders();
+                    }
                 }
             } catch (error) {
                 console.error('Pull error:', error);
@@ -2337,18 +2451,6 @@ Ladun Cakes`;
             if (isoDate) {
                 const date = new Date(isoDate);
                 display.textContent = `Last sync: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-            }
-        }
-        
-        // Auto-sync after saving orders (if cloud is configured)
-        function autoSyncIfConfigured() {
-            const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            if (config.googleSheetsUrl && config.autoSync !== false) {
-                // Debounce auto-sync to avoid too many requests
-                clearTimeout(window.autoSyncTimeout);
-                window.autoSyncTimeout = setTimeout(() => {
-                    syncToCloud();
-                }, 2000);
             }
         }
         
