@@ -157,7 +157,7 @@
         }
 
         .toggle-btn {
-            background: #C9A13C; /* Metallic gold */
+            background: linear-gradient(135deg, #C9A13C 0%, #D4AF47 100%); /* Metallic gold gradient */
             color: #2E2E2E; /* Charcoal text */
             border: none;
             padding: 8px 15px;
@@ -165,12 +165,13 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: transform 0.2s;
         }
 
         .toggle-btn:hover {
-            background: #BFAEA1; /* Taupe hover */
-            color: #FFFFFF;
+            background: linear-gradient(135deg, #BFAEA1 0%, #C9A13C 100%); /* Taupe to gold hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201,161,60,0.3);
         }
 
         .config-content {
@@ -519,7 +520,7 @@
     <div class="container">
         <div class="header">
             <h1>
-                <img src=".//image/Logo.png" alt="Logo" class="header-logo">
+                <img src="image/Logo.png" alt="Logo" class="header-logo">
                 <div style="text-align: center;">
                     <div>Ladun Cakes</div>
                     <div style="font-size: 0.6em; margin-top: 5px;">Order Email Notification</div>
@@ -563,14 +564,10 @@
                 </div>
                 <div class="setup-row">
                     <div>
-                        <label>
-                            <input type="checkbox" id="testMode" onchange="toggleTestMode()"> 
-                            🧪 1-Minute Test Mode (Anniversary emails sent 1 minute after collection)
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="testMode" onchange="toggleTestMode()" style="width: 18px; height: 18px;"> 
+                            <span>🧪 <strong>Test Mode</strong> - Anniversary in 1 minute (for testing)</span>
                         </label>
-                        <br>
-                        <button onclick="recalculateAllAnniversaries()" style="margin-top: 10px; padding: 6px 12px; background: #ffc107; color: #000; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
-                            🔄 Recalculate All Anniversary Dates
-                        </button>
                     </div>
                     <div style="display: flex; align-items: end;">
                         <button onclick="saveConfig()" style="padding: 8px 16px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
@@ -579,55 +576,20 @@
                     </div>
                 </div>
                 
-                <!-- Data Backup & Restore Section -->
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #BFAEA1;">
-                    <h4 style="color: #2E2E2E; margin-bottom: 10px;">💾 Data Backup & Restore</h4>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Export your data to keep it safe or transfer to a new phone. Import to restore your orders and settings.</p>
+                <!-- Cloud Sync Section -->
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #C9A13C;">
+                    <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync (Google Sheets)</h4>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Sync your data to Google Sheets for automatic backup and access from any device.</p>
                     
-                    <!-- Mobile-Friendly Copy Button -->
-                    <button onclick="copyDataToClipboard()" style="padding: 12px 16px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-bottom: 10px;">
-                        📋 Copy All Data to Clipboard (Mobile Friendly)
-                    </button>
-                    
-                    <div class="setup-row">
-                        <div>
-                            <button onclick="exportAllData()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
-                                📤 Export File
-                            </button>
-                        </div>
-                        <div>
-                            <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; font-weight: 600;">
-                                📥 Import File
-                            </button>
-                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importAllData(event)">
-                        </div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 12px; font-weight: 600;">Google Sheets API URL:</label>
+                        <input type="text" id="googleSheetsUrl" placeholder="https://script.google.com/macros/s/.../exec" style="width: 100%; padding: 8px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px; margin-top: 5px;">
                     </div>
                     
-                    <!-- Paste Import for Mobile -->
-                    <button onclick="showPasteImport()" style="padding: 10px 16px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 10px;">
-                        📝 Paste Data to Import (Mobile Friendly)
-                    </button>
-                    <div id="pasteImportArea" style="display: none; margin-top: 10px;">
-                        <textarea id="pasteDataInput" placeholder="Paste your backup data here..." style="width: 100%; height: 100px; padding: 10px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px;"></textarea>
-                        <button onclick="importFromPaste()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%; margin-top: 5px;">
-                            ✅ Import Pasted Data
-                        </button>
-                    </div>
-                    
-                    <!-- Cloud Sync Section -->
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #C9A13C;">
-                        <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync (Google Sheets)</h4>
-                        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Sync your data to Google Sheets for automatic backup and access from any device.</p>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <label style="font-size: 12px; font-weight: 600;">Google Sheets API URL:</label>
-                            <input type="text" id="googleSheetsUrl" placeholder="https://script.google.com/macros/s/.../exec" style="width: 100%; padding: 8px; border: 2px solid #BFAEA1; border-radius: 5px; font-size: 12px; margin-top: 5px;">
-                        </div>
-                        
-                        <div class="setup-row" style="margin-bottom: 10px;">
-                            <div>
-                                <button onclick="testCloudConnection()" style="padding: 10px 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
-                                    🔌 Test Connection
+                    <div class="setup-row" style="margin-bottom: 10px;">
+                        <div>
+                            <button onclick="testCloudConnection()" style="padding: 10px 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
+                                🔌 Test Connection
                                 </button>
                             </div>
                             <div>
@@ -637,25 +599,9 @@
                             </div>
                         </div>
                         
-                        <button onclick="syncToCloud()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
-                            🔄 Sync Now (Smart Merge)
+                        <button onclick="syncToCloud()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #C9A13C 0%, #D4AF47 100%); color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+                            🔄 Sync Now
                         </button>
-                        
-                        <!-- Push/Pull Buttons for One-Way Sync -->
-                        <div class="setup-row" style="margin-top: 10px;">
-                            <div>
-                                <button onclick="pushToCloud()" style="padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
-                                    ⬆️ Push to Cloud
-                                </button>
-                                <p style="font-size: 10px; color: #888; margin-top: 3px;">Overwrites cloud with local</p>
-                            </div>
-                            <div>
-                                <button onclick="pullFromCloud()" style="padding: 10px 16px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%;">
-                                    ⬇️ Pull from Cloud
-                                </button>
-                                <p style="font-size: 10px; color: #888; margin-top: 3px;">Overwrites local with cloud</p>
-                            </div>
-                        </div>
                         
                         <div id="syncStatus" style="margin-top: 10px; padding: 10px; border-radius: 5px; font-size: 12px; display: none;"></div>
                         
@@ -815,7 +761,7 @@
                     <h4>🧪 Testing Features</h4>
                     <ul>
                         <li><strong>1-Minute Test Mode:</strong> Rapid anniversary testing (1 minute instead of 323 days)</li>
-                        <li><strong>Recalculate Button:</strong> Update existing orders when switching modes</li>
+                        <li><strong>Auto-Recalculate:</strong> Toggle test mode to automatically update all anniversary dates</li>
                         <li><strong>Live Updates:</strong> Anniversary management refreshes every second in test mode</li>
                         <li><strong>Persistent Timers:</strong> Countdowns survive page refreshes</li>
                     </ul>
@@ -917,7 +863,7 @@
                     <ul>
                         <li><strong>Email Not Sending:</strong> Check EmailJS config and template IDs</li>
                         <li><strong>Buttons Not Working:</strong> Check browser console for JavaScript errors</li>
-                        <li><strong>Timer Reset Issues:</strong> Use "Recalculate All Anniversary Dates" button</li>
+                        <li><strong>Timer Reset Issues:</strong> Toggle test mode off and on to recalculate dates</li>
                         <li><strong>Missing Orders:</strong> Check localStorage in browser dev tools</li>
                         <li><strong>Anniversary Issues:</strong> Verify test mode settings and stored dates</li>
                     </ul>
@@ -999,41 +945,6 @@
                 config.testMode = testMode;
                 localStorage.setItem('miniAppConfig', JSON.stringify(config));
             }
-        }
-
-        // Manually recalculate all anniversary dates based on current test mode
-        function recalculateAllAnniversaries() {
-            const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            let recalculatedCount = 0;
-            
-            orders.forEach(order => {
-                if (order.thankYouSent && order.thankYouSentTime) {
-                    if (config.testMode) {
-                        // Test mode: 1 minute after collection notice sent
-                        const anniversaryDate = new Date(order.thankYouSentTime);
-                        anniversaryDate.setMinutes(anniversaryDate.getMinutes() + 1);
-                        order.anniversaryDate = anniversaryDate.toISOString();
-                    } else {
-                        // Normal mode: 323 days after collection date
-                        const collectionDate = new Date(order.collectionDate + 'T12:00:00');
-                        const anniversaryDate = new Date(collectionDate);
-                        anniversaryDate.setDate(anniversaryDate.getDate() + 323);
-                        order.anniversaryDate = anniversaryDate.toISOString();
-                    }
-                    recalculatedCount++;
-                }
-            });
-            
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            // Refresh displays
-            displayOrders();
-            const anniversaryManager = document.getElementById('anniversaryManager');
-            if (anniversaryManager && anniversaryManager.style.display !== 'none') {
-                displayAnniversaryOrders();
-            }
-            
-            showStatus(`🔄 Recalculated ${recalculatedCount} anniversary dates based on current mode (${config.testMode ? 'Test' : 'Normal'})`, 'success');
         }
 
         // Clear all orders function
@@ -1936,267 +1847,6 @@
         // Manual-only system - no automatic anniversary emails
         console.log('🎂 LaDun Cakes Order App loaded - Manual anniversary email system active');
 
-        // ===== DATA EXPORT/IMPORT FUNCTIONS =====
-        // Export all data (orders + config) to a JSON file
-        function exportAllData() {
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    appVersion: '1.0',
-                    emailConfig: JSON.parse(localStorage.getItem('miniAppEmailConfig') || '{}'),
-                    orders: JSON.parse(localStorage.getItem('miniAppOrders') || '[]'),
-                    appConfig: JSON.parse(localStorage.getItem('miniAppConfig') || '{}')
-                };
-                
-                const dataStr = JSON.stringify(exportData, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                
-                const now = new Date();
-                const dateStr = now.toISOString().split('T')[0];
-                const filename = `laduncakes-backup-${dateStr}.json`;
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showStatus(`✅ Data exported successfully! File: ${filename} (${orders.length} orders)`, 'success');
-                console.log('📤 Data exported:', exportData);
-            } catch (error) {
-                console.error('Export error:', error);
-                showStatus('❌ Export failed: ' + error.message, 'error');
-            }
-        }
-        
-        // Import data from a JSON file
-        function importAllData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importData = JSON.parse(e.target.result);
-                    
-                    // Validate the data structure
-                    if (!importData.orders && !importData.emailConfig) {
-                        throw new Error('Invalid backup file format');
-                    }
-                    
-                    // Confirm import
-                    const orderCount = importData.orders ? importData.orders.length : 0;
-                    const exportDate = importData.exportDate ? new Date(importData.exportDate).toLocaleDateString() : 'Unknown';
-                    
-                    if (!confirm(`Import data from backup?\n\n📅 Backup Date: ${exportDate}\n📦 Orders: ${orderCount}\n\n⚠️ This will REPLACE all current data!`)) {
-                        event.target.value = '';
-                        return;
-                    }
-                    
-                    // Import email config
-                    if (importData.emailConfig && Object.keys(importData.emailConfig).length > 0) {
-                        localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
-                        emailConfig = importData.emailConfig;
-                        document.getElementById('publicKey').value = emailConfig.publicKey || '';
-                        document.getElementById('serviceId').value = emailConfig.serviceId || '';
-                        document.getElementById('templateId').value = emailConfig.templateId || '';
-                        document.getElementById('followUpTemplateId').value = emailConfig.followUpTemplateId || '';
-                        if (emailConfig.publicKey) {
-                            emailjs.init(emailConfig.publicKey);
-                        }
-                    }
-                    
-                    // Import orders
-                    if (importData.orders) {
-                        orders = importData.orders;
-                        localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                        displayOrders();
-                    }
-                    
-                    // Import app config (test mode, etc.)
-                    if (importData.appConfig) {
-                        localStorage.setItem('miniAppConfig', JSON.stringify(importData.appConfig));
-                        if (importData.appConfig.testMode !== undefined) {
-                            document.getElementById('testMode').checked = importData.appConfig.testMode;
-                        }
-                    }
-                    
-                    showStatus(`✅ Data imported successfully! ${orderCount} orders restored from ${exportDate}`, 'success');
-                    console.log('📥 Data imported:', importData);
-                    
-                    // Refresh anniversary display if visible
-                    const anniversaryManager = document.getElementById('anniversaryManager');
-                    if (anniversaryManager && anniversaryManager.style.display !== 'none') {
-                        displayAnniversaryOrders();
-                    }
-                    
-                } catch (error) {
-                    console.error('Import error:', error);
-                    showStatus('❌ Import failed: ' + error.message, 'error');
-                }
-                
-                // Reset file input
-                event.target.value = '';
-            };
-            
-            reader.onerror = function() {
-                showStatus('❌ Could not read file', 'error');
-                event.target.value = '';
-            };
-            
-            reader.readAsText(file);
-        }
-        
-        console.log('💾 Export/Import functions available: exportAllData(), importAllData()');
-
-        // ===== MOBILE-FRIENDLY COPY/PASTE FUNCTIONS =====
-        // Copy all data to clipboard (works great on mobile!)
-        function copyDataToClipboard() {
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    appVersion: '1.0',
-                    emailConfig: JSON.parse(localStorage.getItem('miniAppEmailConfig') || '{}'),
-                    orders: JSON.parse(localStorage.getItem('miniAppOrders') || '[]'),
-                    appConfig: JSON.parse(localStorage.getItem('miniAppConfig') || '{}')
-                };
-                
-                const dataStr = JSON.stringify(exportData);
-                
-                // Try modern clipboard API first
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(dataStr).then(() => {
-                        showStatus(`✅ Data copied to clipboard! (${exportData.orders.length} orders) - Paste this in Notes app or send to yourself!`, 'success');
-                    }).catch(err => {
-                        // Fallback for iOS
-                        fallbackCopyToClipboard(dataStr, exportData.orders.length);
-                    });
-                } else {
-                    // Fallback for older browsers
-                    fallbackCopyToClipboard(dataStr, exportData.orders.length);
-                }
-            } catch (error) {
-                console.error('Copy error:', error);
-                showStatus('❌ Copy failed: ' + error.message, 'error');
-            }
-        }
-        
-        // Fallback copy method for iOS and older browsers
-        function fallbackCopyToClipboard(text, orderCount) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-9999px';
-            textArea.style.top = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showStatus(`✅ Data copied to clipboard! (${orderCount} orders) - Paste this in Notes app or send to yourself!`, 'success');
-            } catch (err) {
-                // If copy fails, show the data for manual copy
-                showManualCopyDialog(text);
-            }
-            
-            document.body.removeChild(textArea);
-        }
-        
-        // Show manual copy dialog if automatic copy fails
-        function showManualCopyDialog(text) {
-            const dialog = document.createElement('div');
-            dialog.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
-            dialog.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 80%; overflow: auto;">
-                    <h3 style="margin-bottom: 10px;">📋 Copy This Data Manually</h3>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Long-press and select all, then copy:</p>
-                    <textarea id="manualCopyText" style="width: 100%; height: 150px; font-size: 10px; padding: 10px;" readonly>${text}</textarea>
-                    <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 10px; padding: 10px 20px; background: #C9A13C; color: #2E2E2E; border: none; border-radius: 5px; width: 100%; font-weight: 600;">Close</button>
-                </div>
-            `;
-            document.body.appendChild(dialog);
-            document.getElementById('manualCopyText').select();
-        }
-        
-        // Show paste import area
-        function showPasteImport() {
-            const pasteArea = document.getElementById('pasteImportArea');
-            pasteArea.style.display = pasteArea.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        // Import from pasted data
-        function importFromPaste() {
-            const pasteInput = document.getElementById('pasteDataInput');
-            const pastedData = pasteInput.value.trim();
-            
-            if (!pastedData) {
-                showStatus('❌ Please paste your backup data first', 'error');
-                return;
-            }
-            
-            try {
-                const importData = JSON.parse(pastedData);
-                
-                // Validate the data structure
-                if (!importData.orders) {
-                    throw new Error('Invalid backup data - no orders found');
-                }
-                
-                const orderCount = importData.orders.length;
-                const exportDate = importData.exportDate ? new Date(importData.exportDate).toLocaleDateString() : 'Unknown';
-                
-                if (!confirm(`Import data from backup?\n\n📅 Backup Date: ${exportDate}\n📦 Orders: ${orderCount}\n\n⚠️ This will REPLACE all current data!`)) {
-                    return;
-                }
-                
-                // Import email config
-                if (importData.emailConfig && Object.keys(importData.emailConfig).length > 0) {
-                    localStorage.setItem('miniAppEmailConfig', JSON.stringify(importData.emailConfig));
-                    emailConfig = importData.emailConfig;
-                    document.getElementById('publicKey').value = emailConfig.publicKey || '';
-                    document.getElementById('serviceId').value = emailConfig.serviceId || '';
-                    document.getElementById('templateId').value = emailConfig.templateId || '';
-                    document.getElementById('followUpTemplateId').value = emailConfig.followUpTemplateId || '';
-                    if (emailConfig.publicKey) {
-                        emailjs.init(emailConfig.publicKey);
-                    }
-                }
-                
-                // Import orders
-                orders = importData.orders;
-                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                displayOrders();
-                
-                // Import app config
-                if (importData.appConfig) {
-                    localStorage.setItem('miniAppConfig', JSON.stringify(importData.appConfig));
-                    if (importData.appConfig.testMode !== undefined) {
-                        document.getElementById('testMode').checked = importData.appConfig.testMode;
-                    }
-                }
-                
-                // Clear paste area and hide it
-                pasteInput.value = '';
-                document.getElementById('pasteImportArea').style.display = 'none';
-                
-                showStatus(`✅ Data imported successfully! ${orderCount} orders restored from ${exportDate}`, 'success');
-                
-                // Refresh anniversary display if visible
-                const anniversaryManager = document.getElementById('anniversaryManager');
-                if (anniversaryManager && anniversaryManager.style.display !== 'none') {
-                    displayAnniversaryOrders();
-                }
-                
-            } catch (error) {
-                console.error('Paste import error:', error);
-                showStatus('❌ Import failed: ' + error.message + '. Make sure you pasted the complete data.', 'error');
-            }
-        }
-
         // ===== GOOGLE SHEETS CLOUD SYNC FUNCTIONS =====
         
         // Default Google Sheets API URL (hardcoded for convenience)
@@ -2294,8 +1944,12 @@
                 if (data.error) {
                     showSyncStatus('❌ Sync failed: ' + data.error, 'error');
                 } else {
-                    // Update local orders with merged data
-                    orders = data.orders;
+                    // Filter to keep only pending orders (need action)
+                    const allOrders = data.orders || [];
+                    const pendingOrders = filterPendingOrders(allOrders);
+                    
+                    // Update local orders with only pending items
+                    orders = pendingOrders;
                     localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                     displayOrders();
                     
@@ -2305,7 +1959,7 @@
                     localStorage.setItem('miniAppConfig', JSON.stringify(config));
                     updateLastSyncDisplay(data.lastSync);
                     
-                    showSyncStatus(`✅ Synced! ${data.mergedCount} orders (Local: ${data.localCount}, Cloud: ${data.cloudCount})`, 'success');
+                    showSyncStatus(`✅ Synced! ${pendingOrders.length} pending orders (${allOrders.length} total in cloud)`, 'success');
                     
                     // Refresh anniversary display if visible
                     const anniversaryManager = document.getElementById('anniversaryManager');
@@ -2322,106 +1976,20 @@
             }
         }
         
-        // Pull orders from cloud (download only - OVERWRITES local data)
-        async function pullFromCloud() {
-            const url = document.getElementById('googleSheetsUrl').value.trim();
-            
-            if (!url) {
-                showSyncStatus('❌ Please configure Google Sheets URL first', 'error');
-                return;
-            }
-            
-            if (!confirm('Download orders from cloud?\n\n⚠️ This will REPLACE all local data!')) {
-                return;
-            }
-            
-            showSyncStatus('🔄 Downloading from cloud...', 'info');
-            
-            try {
-                const response = await fetch(url + '?action=getOrders', {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    showSyncStatus('❌ Download failed: ' + data.error, 'error');
-                } else {
-                    orders = data.orders || [];
-                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                    displayOrders();
-                    
-                    const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-                    config.lastSync = new Date().toISOString();
-                    localStorage.setItem('miniAppConfig', JSON.stringify(config));
-                    updateLastSyncDisplay(config.lastSync);
-                    
-                    showSyncStatus(`✅ Downloaded ${orders.length} orders from cloud!`, 'success');
-                    
-                    // Refresh anniversary display if visible
-                    const anniversaryManager = document.getElementById('anniversaryManager');
-                    if (anniversaryManager && anniversaryManager.style.display !== 'none') {
-                        displayAnniversaryOrders();
-                    }
+        // Filter orders to only include those with pending actions
+        function filterPendingOrders(allOrders) {
+            return allOrders.filter(order => {
+                // Keep if collection notice NOT sent yet
+                if (!order.thankYouSent) {
+                    return true;
                 }
-            } catch (error) {
-                console.error('Pull error:', error);
-                showSyncStatus('❌ Download failed: ' + error.message, 'error');
-            }
-        }
-        
-        // Push orders to cloud (upload only - OVERWRITES cloud data)
-        async function pushToCloud() {
-            const url = document.getElementById('googleSheetsUrl').value.trim();
-            
-            if (!url) {
-                showSyncStatus('❌ Please configure Google Sheets URL first', 'error');
-                return;
-            }
-            
-            if (!confirm(`Upload ${orders.length} local orders to cloud?\n\n⚠️ This will REPLACE all cloud data!`)) {
-                return;
-            }
-            
-            showSyncStatus('🔄 Uploading to cloud...', 'info');
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    mode: 'cors',
-                    redirect: 'follow',
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    },
-                    body: JSON.stringify({
-                        action: 'saveOrders',
-                        orders: orders
-                    })
-                });
-                
-                const text = await response.text();
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (parseError) {
-                    showSyncStatus('❌ Upload failed: Invalid response', 'error');
-                    return;
+                // Keep if collection sent BUT anniversary NOT sent and NOT skipped
+                if (order.thankYouSent && !order.anniversarySent && !order.anniversarySkipped) {
+                    return true;
                 }
-                
-                if (data.error) {
-                    showSyncStatus('❌ Upload failed: ' + data.error, 'error');
-                } else {
-                    const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-                    config.lastSync = data.lastSync;
-                    localStorage.setItem('miniAppConfig', JSON.stringify(config));
-                    updateLastSyncDisplay(data.lastSync);
-                    showSyncStatus(`✅ Uploaded ${data.count} orders to cloud!`, 'success');
-                }
-            } catch (error) {
-                console.error('Push error:', error);
-                showSyncStatus('❌ Upload failed: ' + error.message, 'error');
-            }
+                // Otherwise, order is complete - don't keep locally
+                return false;
+            });
         }
         
         // Show sync status message
