@@ -1,0 +1,47 @@
+# 🚀 GitHub Pages Setup Guide
+
+## Step 1: Create GitHub Account
+1. Go to github.com
+2. Sign up for free account
+3. Verify your email
+
+## Step 2: Create Repository
+1. Click "New repository"
+2. Name it: "mini-order-app"
+3. Make it Public
+4. Check "Add a README file"
+5. Click "Create repository"
+
+## Step 3: Upload Your File
+1. Click "uploading an existing file"
+2. Drag mini-order-app.html into the box
+3. Rename it to: index.html
+4. Click "Commit changes"
+
+## Step 4: Enable GitHub Pages
+1. Go to Settings tab
+2. Scroll to "Pages" section
+3. Source: Deploy from branch
+4. Branch: main
+5. Click Save
+
+## Step 5: Access Your App
+Your app will be available at:
+https://YOUR-USERNAME.github.io/mini-order-app/
+
+Example: https://gracecakes.github.io/mini-order-app/
+
+## Benefits:
+✅ Works on ANY device with internet
+✅ Professional web address
+✅ Always accessible
+✅ Easy to share with customers
+✅ Automatic HTTPS security
+✅ Free forever
+
+## Your app will work perfectly on:
+- iPhone Safari
+- iPad Safari  
+- Android Chrome
+- Any computer browser
+- Can be added to home screen from any device

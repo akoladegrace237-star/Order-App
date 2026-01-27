@@ -1,0 +1,39 @@
+📧 EMAIL THIS TO YOURSELF: akoladegrace237@mail.com
+
+=== MINI ORDER APP FOR IPHONE/IPAD ===
+
+METHOD 1 - SAFARI TRICK:
+1. On your iPhone/iPad, open Safari
+2. In the address bar, type exactly: data:text/html,<h1>Test</h1>
+3. Press Go - you'll see "Test" displayed
+4. This proves the method works!
+
+METHOD 2 - NOTES APP (EASIEST):
+1. Email this text file to yourself
+2. Copy the web address below
+3. Paste it into iPhone Notes app
+4. Tap the link in Notes - it will open your app!
+
+WEB ADDRESS TO COPY:
+http://192.168.1.207:8080/mini-order-app.html
+
+METHOD 3 - SIMPLE FILE SHARING:
+1. Go to wetransfer.com on your computer
+2. Upload mini-order-app.html 
+3. Email the download link to yourself
+4. Download on iPhone and open in Safari
+
+METHOD 4 - TELEGRAM/WHATSAPP:
+1. Send the mini-order-app.html file to yourself via Telegram or WhatsApp
+2. Download it from the chat on your phone
+3. Open with Safari
+
+The file is located at:
+C:\Users\akola\Desktop\Email Notification\mini-order-app.html
+
+Your app includes:
+✅ Cake order management
+✅ Customer email notifications  
+✅ Anniversary email marketing
+✅ Works offline on mobile
+✅ Professional interface
