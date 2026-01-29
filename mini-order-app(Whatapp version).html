@@ -783,6 +783,16 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<div class="spinner"></div> Saving Order...';
 
+            // Validate required fields
+            const collectionDate = document.getElementById('collectionDate').value;
+            const collectionTime = document.getElementById('collectionTime').value;
+            if (!collectionDate || !collectionTime) {
+                showStatus('❌ Please enter both collection date and time.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Save Order 🎂';
+                return;
+            }
+
             // Always fetch latest cloud orders before creating a new order
             fetch(DEFAULT_GOOGLE_SHEETS_URL + '?action=getOrders', {
                 method: 'GET',
@@ -799,8 +809,8 @@
                     customerPhone: document.getElementById('customerPhone').value,
                     cakeType: document.getElementById('cakeType').value,
                     orderDetails: document.getElementById('orderDetails').value || 'No special requests',
-                    collectionDate: document.getElementById('collectionDate').value,
-                    collectionTime: document.getElementById('collectionTime').value,
+                    collectionDate: collectionDate,
+                    collectionTime: collectionTime,
                     orderDate: new Date().toLocaleDateString()
                 };
 
@@ -827,8 +837,8 @@
                     customerPhone: orderData.customerPhone,
                     cakeType: orderData.cakeType,
                     orderDetails: orderData.orderDetails,
-                    collectionDate: orderData.collectionDate,
-                    collectionTime: orderData.collectionTime,
+                    collectionDate: collectionDate,
+                    collectionTime: collectionTime,
                     orderDate: new Date().toLocaleDateString(),
                     thankYouSent: '',
                     whatsappSent: '',
@@ -856,13 +866,13 @@
         function displayOrders() {
             const ordersSection = document.getElementById('ordersSection');
             const ordersList = document.getElementById('ordersList');
-            // Only show orders that need thank you or anniversary action
+            // Debug: log all orders
+            console.log('All loaded orders:', orders);
+            // Show all orders where thankYouSent, anniversarySent, or anniversarySkipped is blank (pending)
             const visibleOrders = orders.filter(order => {
-                // Needs thank you if thankYouSent is blank
-                if (!order.thankYouSent || order.thankYouSent === '') return true;
-                // Needs anniversary if thankYouSent is Sent and anniversarySent is blank and not skipped
-                if (order.thankYouSent === 'Sent' && (!order.anniversarySent || order.anniversarySent === '') && (!order.anniversarySkipped || order.anniversarySkipped === '')) return true;
-                return false;
+                const isThankYouPending = !order.thankYouSent || order.thankYouSent === '' || order.thankYouSent === false || order.thankYouSent === 'FALSE';
+                const isAnnivPending = order.thankYouSent === 'Sent' && (!order.anniversarySent || order.anniversarySent === '' || order.anniversarySent === false || order.anniversarySent === 'FALSE') && (!order.anniversarySkipped || order.anniversarySkipped === '' || order.anniversarySkipped === false || order.anniversarySkipped === 'FALSE');
+                return isThankYouPending || isAnnivPending;
             });
             if (visibleOrders.length === 0) {
                 ordersSection.style.display = 'none';
