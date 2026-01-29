@@ -1240,7 +1240,7 @@ Ladun Cakes`;
 
             // Filter and sort orders by collection date
             const ordersWithAnniversary = orders
-                .filter(order => order.whatsappSent && !order.anniversarySkipped && !order.anniversaryWhatsappSent) // Only show orders where collection notice was sent via WhatsApp AND not skipped AND not sent
+                .filter(order => order.whatsappSent && !order.anniversarySkipped && !order.anniversarySent) // Only show orders where collection notice was sent via WhatsApp AND not skipped AND not sent
                 .map(order => {
                     let anniversaryDate;
                     
@@ -1289,7 +1289,7 @@ Ladun Cakes`;
             if (ordersWithAnniversary.length === 0) {
                 const totalWithCollection = orders.filter(order => order.whatsappSent).length;
                 const skippedCount = orders.filter(order => order.anniversarySkipped).length;
-                const sentCount = orders.filter(order => order.anniversaryWhatsappSent).length;
+                const sentCount = orders.filter(order => order.anniversarySent).length;
                 
                 if (totalWithCollection === 0) {
                     container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No orders with collection WhatsApp sent yet. Send collection WhatsApp first to see anniversary management.</p>';
@@ -1303,10 +1303,10 @@ Ladun Cakes`;
 
             // Calculate stats from all orders (not just the filtered ones)
             const allOrdersWithCollection = orders.filter(order => order.whatsappSent);
-            const readyToSend = ordersWithAnniversary.filter(o => o.isReady && !o.anniversaryWhatsappSent).length;
-            const alreadySent = allOrdersWithCollection.filter(o => o.anniversaryWhatsappSent).length;
+            const readyToSend = ordersWithAnniversary.filter(o => o.isReady && !o.anniversarySent).length;
+            const alreadySent = allOrdersWithCollection.filter(o => o.anniversarySent).length;
             const skipped = allOrdersWithCollection.filter(o => o.anniversarySkipped).length;
-            const waiting = ordersWithAnniversary.filter(o => !o.isReady && !o.anniversaryWhatsappSent).length;
+            const waiting = ordersWithAnniversary.filter(o => !o.isReady && !o.anniversarySent).length;
 
             const statsHtml = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
@@ -1389,7 +1389,7 @@ Ladun Cakes`;
                 }
 
                 let actionButtons;
-                if (order.anniversaryWhatsappSent) {
+                if (order.anniversarySent) {
                     actionButtons = `<div class="anniversary-status status-sent">✅ Anniversary WhatsApp Sent</div>`;
                 } else if (order.anniversarySkipped) {
                     actionButtons = `
@@ -1420,7 +1420,7 @@ Ladun Cakes`;
                 }
 
                 return `
-                    <div class="anniversary-card ${cardClass}" style="${order.isReady && !order.anniversaryWhatsappSent && !order.anniversarySkipped ? 'border: 3px solid #25d366; background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%); box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);' : ''}">
+                    <div class="anniversary-card ${cardClass}" style="${order.isReady && !order.anniversarySent && !order.anniversarySkipped ? 'border: 3px solid #25d366; background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%); box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);' : ''}">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h3 style="margin: 0; color: #5f0f40;">${order.customerName} - ${order.cakeType}</h3>
                             <span style="font-size: 0.9em; color: #666;">Order #${order.id}</span>
