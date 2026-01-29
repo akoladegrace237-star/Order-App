@@ -1653,23 +1653,23 @@ Ladun Cakes`;
                 if (data.error) {
                     showSyncStatus('❌ Sync failed: ' + data.error, 'error');
                 } else {
+                    // Debug: Log all orders from cloud
+                    console.log('DEBUG: Raw cloud orders:', data.orders);
                     // Filter to keep only pending orders (need action)
                     const allOrders = data.orders || [];
                     const pendingOrders = filterPendingOrders(allOrders);
-                    
+                    // Debug: Log filtered pending orders
+                    console.log('DEBUG: Pending orders after filter:', pendingOrders);
                     // Update local orders with only pending items
                     orders = pendingOrders;
                     localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                     displayOrders();
-                    
                     // Update last sync time
                     const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
                     config.lastSync = data.lastSync;
                     localStorage.setItem('miniAppConfig', JSON.stringify(config));
                     updateLastSyncDisplay(data.lastSync);
-                    
                     showSyncStatus(`✅ Synced! ${pendingOrders.length} pending orders (${allOrders.length} total in cloud)`, 'success');
-                    
                     // Refresh anniversary display if visible
                     const anniversaryManager = document.getElementById('anniversaryManager');
                     if (anniversaryManager && anniversaryManager.style.display !== 'none') {
@@ -1692,18 +1692,19 @@ Ladun Cakes`;
                 return val === true || val === 'TRUE';
             }
             function isFalse(val) {
-                return val === false || val === 'FALSE' || val === undefined || val === '';
+                return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
             }
             return allOrders.filter(order => {
-                // Keep if collection notice NOT sent yet
-                if (isFalse(order.whatsappSent)) {
+                // Use correct field names from cloud data
+                // thankYouSent = collection WhatsApp sent
+                // anniversarySent = anniversary WhatsApp sent
+                // anniversarySkipped = anniversary skipped
+                if (isFalse(order.thankYouSent)) {
                     return true;
                 }
-                // Keep if collection sent BUT anniversary NOT sent and NOT skipped
-                if (isTrue(order.whatsappSent) && isFalse(order.anniversaryWhatsappSent) && isFalse(order.anniversarySkipped)) {
+                if (isTrue(order.thankYouSent) && isFalse(order.anniversarySent) && isFalse(order.anniversarySkipped)) {
                     return true;
                 }
-                // Otherwise, order is complete - don't keep locally
                 return false;
             });
         }
