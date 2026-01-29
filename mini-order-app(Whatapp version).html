@@ -1203,8 +1203,15 @@ Ladun Cakes`;
             }
 
             // Filter and sort orders by collection date
+            // Helper to normalize boolean or 'TRUE'/'FALSE' string
+            function isTrue(val) {
+                return val === true || val === 'TRUE';
+            }
+            function isFalse(val) {
+                return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
+            }
             const ordersWithAnniversary = orders
-                .filter(order => order.whatsappSent && !order.anniversarySkipped && !order.anniversarySent) // Only show orders where collection notice was sent via WhatsApp AND not skipped AND not sent
+                .filter(order => isTrue(order.whatsappSent) && isFalse(order.anniversarySkipped) && isFalse(order.anniversarySent))
                 .map(order => {
                     let anniversaryDate;
                     
@@ -1295,7 +1302,15 @@ Ladun Cakes`;
 
             container.innerHTML = statsHtml + ordersWithAnniversary.map(order => {
                 const statusClass = order.anniversarySent ? 'sent' : order.anniversarySkipped ? 'skipped' : order.isReady ? 'ready' : 'waiting';
-                const cardClass = order.anniversarySent ? 'sent' : order.anniversarySkipped ? 'skipped' : order.isReady ? 'ready' : '';
+                // Card color logic:
+                // - Due (ready to send): green border, light green bg
+                // - Not sent, not due (waiting): yellow border, light yellow bg
+                let cardStyle = '';
+                if (order.isReady) {
+                    cardStyle = 'border: 3px solid #25d366; background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%); box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);';
+                } else {
+                    cardStyle = 'border: 2px solid #ffe066; background: #fffbe6;';
+                }
                 
                 // Calculate detailed countdown with days, hours, minutes
                 function formatDetailedCountdown(anniversaryDate, isTestMode) {
@@ -1384,12 +1399,11 @@ Ladun Cakes`;
                 }
 
                 return `
-                    <div class="anniversary-card ${cardClass}" style="${order.isReady && !order.anniversarySent && !order.anniversarySkipped ? 'border: 3px solid #25d366; background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%); box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);' : ''}">
+                    <div class="anniversary-card ${statusClass}" style="${cardStyle}">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h3 style="margin: 0; color: #5f0f40;">${order.customerName} - ${order.cakeType}</h3>
                             <span style="font-size: 0.9em; color: #666;">Order #${order.id}</span>
                         </div>
-                        
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div>
                                 <p><strong>� Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
@@ -1401,7 +1415,6 @@ Ladun Cakes`;
                                 <p><strong>📆 Order Date:</strong> ${order.orderDate}</p>
                             </div>
                         </div>
-                        
                         ${countdownDisplay}
                         ${actionButtons}
                     </div>
@@ -1628,8 +1641,17 @@ Ladun Cakes`;
                 } else {
                     // Debug: Log all orders from cloud
                     console.log('DEBUG: Raw cloud orders:', data.orders);
+                    // Normalize boolean fields for all orders
+                    const normalizeBool = v => v === true || v === 'TRUE';
+                    const allOrders = (data.orders || []).map(order => ({
+                        ...order,
+                        whatsappSent: normalizeBool(order.whatsappSent),
+                        thankYouSent: normalizeBool(order.thankYouSent),
+                        anniversarySent: normalizeBool(order.anniversarySent),
+                        anniversarySkipped: normalizeBool(order.anniversarySkipped),
+                        anniversaryWhatsappSent: normalizeBool(order.anniversaryWhatsappSent)
+                    }));
                     // Filter to keep only pending orders (need action)
-                    const allOrders = data.orders || [];
                     const pendingOrders = filterPendingOrders(allOrders);
                     // Debug: Log filtered pending orders
                     console.log('DEBUG: Pending orders after filter:', pendingOrders);
