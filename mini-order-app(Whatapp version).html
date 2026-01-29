@@ -1535,15 +1535,28 @@ Ladun Cakes`;
         // Default Google Sheets API URL (hardcoded for convenience)
         const DEFAULT_GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQDdxFPdr9pI40TE7dK8inqV5Nybu2H9JtYjizl_8eP1SSUZkvruzS39xBV8gNlQA/exec';
         
-        // Load cloud config on startup
-        function loadCloudConfig() {
+        // Load cloud config and orders on startup
+        async function loadCloudConfig() {
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            // Always enforce the default URL
             config.googleSheetsUrl = DEFAULT_GOOGLE_SHEETS_URL;
             localStorage.setItem('miniAppConfig', JSON.stringify(config));
             document.getElementById('googleSheetsUrl').value = DEFAULT_GOOGLE_SHEETS_URL;
             if (config.lastSync) {
                 updateLastSyncDisplay(config.lastSync);
+            }
+            // Fetch all orders from cloud and populate local orders
+            try {
+                const response = await fetch(DEFAULT_GOOGLE_SHEETS_URL + '?action=getOrders', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                const data = await response.json();
+                if (data.orders) {
+                    orders = data.orders;
+                    displayOrders();
+                }
+            } catch (e) {
+                console.error('Failed to load cloud orders on startup:', e);
             }
         }
         
@@ -1580,6 +1593,20 @@ Ladun Cakes`;
         
         // Sync orders to/from Google Sheets
         async function syncToCloud() {
+            // Always fetch latest cloud orders before syncing
+            try {
+                const response = await fetch(DEFAULT_GOOGLE_SHEETS_URL + '?action=getOrders', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                const data = await response.json();
+                if (data.orders) {
+                    orders = data.orders;
+                    displayOrders();
+                }
+            } catch (e) {
+                console.error('Failed to fetch latest cloud orders before sync:', e);
+            }
             const url = DEFAULT_GOOGLE_SHEETS_URL;
             const syncBtn = document.getElementById('syncBtn');
             syncBtn.disabled = true;
