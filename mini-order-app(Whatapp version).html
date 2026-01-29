@@ -1553,9 +1553,17 @@ Ladun Cakes`;
                 // Reset Local Data: clears all local orders and config, then syncs from cloud
                 function resetLocalData() {
                     if (confirm('Are you sure you want to reset all local data? This will clear all orders and settings on this device and reload from the cloud.')) {
+                        // Preserve testMode if set
+                        let testMode = false;
+                        const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
+                        if (config && typeof config.testMode !== 'undefined') {
+                            testMode = config.testMode;
+                        }
                         localStorage.removeItem('miniAppOrders');
                         localStorage.removeItem('miniAppConfig');
                         orders = [];
+                        // Restore testMode
+                        localStorage.setItem('miniAppConfig', JSON.stringify({ testMode }));
                         displayOrders();
                         showSyncStatus('🗑️ Local data cleared. Please sync to reload from cloud.', 'info');
                     }
@@ -1713,20 +1721,19 @@ Ladun Cakes`;
                 return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
             }
             return allOrders.filter(order => {
-                // Exclude if anniversarySkipped is true
+                // If anniversarySkipped is true, order is completed
                 if (isTrue(order.anniversarySkipped)) {
                     return false;
                 }
-                // Use correct field names from cloud data
-                // thankYouSent = collection WhatsApp sent
-                // anniversarySent = anniversary WhatsApp sent
-                // anniversarySkipped = anniversary skipped
+                // Pending if thankYouSent is false
                 if (isFalse(order.thankYouSent)) {
                     return true;
                 }
-                if (isTrue(order.thankYouSent) && isFalse(order.anniversarySent) && isFalse(order.anniversarySkipped)) {
+                // Pending if thankYouSent is true, anniversarySent is false, and not skipped
+                if (isTrue(order.thankYouSent) && isFalse(order.anniversarySent)) {
                     return true;
                 }
+                // Otherwise, completed
                 return false;
             });
         }
