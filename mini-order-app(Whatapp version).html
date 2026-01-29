@@ -554,6 +554,9 @@
                     <!-- Cloud Sync Section -->
                     <div style="padding-top: 15px; border-top: 2px dashed #C9A13C;">
                         <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync</h4>
+                                <button onclick="resetLocalData()" style="padding: 10px 16px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 10px; width: 100%;">
+                                    🗑️ Reset Local Data
+                                </button>
                         <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Backup & sync data across devices via Google Sheets.</p>
                         
                         <div style="margin-bottom: 10px;">
@@ -1542,6 +1545,17 @@ Ladun Cakes`;
         console.log('🎂 LaDun Cakes Order App loaded - Manual anniversary email system active');
 
         // ===== GOOGLE SHEETS CLOUD SYNC FUNCTIONS =====
+
+                // Reset Local Data: clears all local orders and config, then syncs from cloud
+                function resetLocalData() {
+                    if (confirm('Are you sure you want to reset all local data? This will clear all orders and settings on this device and reload from the cloud.')) {
+                        localStorage.removeItem('miniAppOrders');
+                        localStorage.removeItem('miniAppConfig');
+                        orders = [];
+                        displayOrders();
+                        showSyncStatus('🗑️ Local data cleared. Please sync to reload from cloud.', 'info');
+                    }
+                }
         
         // Default Google Sheets API URL (hardcoded for convenience)
         const DEFAULT_GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw1aiz1BqUm6pvDtInwIWdEot3i7fmkJny4jrgjFBGKTN2mNa2MUO1lrcIZwQNbGVXT6g/exec';
