@@ -822,13 +822,14 @@
             // Combine collectionDate and collectionTime into a single ISO string
             const collectionDateTime = new Date(`${collectionDate}T${collectionTime}`).toISOString();
 
-            // Update orderData to use collectionDate only
+            // Update orderData to use collectionDate and collectionTime as separate fields
             const orderData = {
                 customerName: document.getElementById('customerName').value,
                 customerPhone: document.getElementById('customerPhone').value,
                 cakeType: document.getElementById('cakeType').value,
                 orderDetails: document.getElementById('orderDetails').value || 'No special requests',
-                collectionDate: collectionDate, // Use collectionDate only
+                collectionDate: collectionDate, // Store as date only
+                collectionTime: collectionTime, // Store as time only
                 orderdate: new Date().toLocaleDateString(), // match sheet header
                 thankYouSent: '',
                 whatsappSent: '',
@@ -844,8 +845,9 @@
                 customerPhone: orderData.customerPhone,
                 cakeType: orderData.cakeType,
                 orderDetails: orderData.orderDetails,
-                collectionDate: collectionDate,
-                orderdate: new Date().toLocaleDateString(), // match sheet header
+                collectionDate: orderData.collectionDate,
+                collectionTime: orderData.collectionTime,
+                orderdate: orderData.orderdate,
                 thankYouSent: '',
                 whatsappSent: '',
                 anniversarySent: '',
@@ -896,7 +898,7 @@
                 if (order.anniversaryDate) {
                     anniversaryDate = new Date(order.anniversaryDate);
                 } else {
-                    // Fallback calculation for older orders
+                    // Fallback calculation for older orders without stored anniversary date
                     if (testMode) {
                         // Test mode: 1 minute after collection time
                         if (order.collectionDate && order.collectionTime) {
