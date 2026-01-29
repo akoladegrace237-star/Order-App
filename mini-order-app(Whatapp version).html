@@ -1087,6 +1087,9 @@ Ladun Cakes`;
             // Mark as sent and calculate anniversary date
             order.whatsappSent = true;
             order.whatsappSentTime = new Date().toISOString();
+            // Also update thankYouSent for cloud sync compatibility
+            order.thankYouSent = true;
+            order.thankYouSentTime = order.whatsappSentTime;
             
             // Calculate and store the anniversary date
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
@@ -1151,6 +1154,7 @@ Ladun Cakes`;
             
             // Mark as sent
             order.anniversaryWhatsappSent = true;
+            order.anniversarySent = true; // For cloud sync compatibility
             order.anniversarySentDate = new Date().toLocaleString();
             localStorage.setItem('miniAppOrders', JSON.stringify(orders));
             
