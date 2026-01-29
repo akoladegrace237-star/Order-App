@@ -1687,13 +1687,20 @@ Ladun Cakes`;
         
         // Filter orders to only include those with pending actions
         function filterPendingOrders(allOrders) {
+            // Helper to normalize boolean or 'TRUE'/'FALSE' string
+            function isTrue(val) {
+                return val === true || val === 'TRUE';
+            }
+            function isFalse(val) {
+                return val === false || val === 'FALSE' || val === undefined || val === '';
+            }
             return allOrders.filter(order => {
                 // Keep if collection notice NOT sent yet
-                if (!order.whatsappSent) {
+                if (isFalse(order.whatsappSent)) {
                     return true;
                 }
                 // Keep if collection sent BUT anniversary NOT sent and NOT skipped
-                if (order.whatsappSent && !order.anniversaryWhatsappSent && !order.anniversarySkipped) {
+                if (isTrue(order.whatsappSent) && isFalse(order.anniversaryWhatsappSent) && isFalse(order.anniversarySkipped)) {
                     return true;
                 }
                 // Otherwise, order is complete - don't keep locally
