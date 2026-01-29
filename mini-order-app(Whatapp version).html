@@ -925,7 +925,7 @@
                                 ${order.whatsappSent ? 'Order Confirmed' : 'Pending'}
                             </span>
                         </h3>
-                        <p><strong>� Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
+                        <p><strong> Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
                         <p><strong>🎂 Cake Type:</strong> ${order.cakeType}</p>
                         <p><strong>📅 Collection:</strong> ${formatDate(order.collectionDate)} at ${order.collectionTime}</p>
                         <p><strong>📝 Details:</strong> ${order.orderDetails || 'No special requests'}</p>
@@ -1382,7 +1382,7 @@ Ladun Cakes`;
                 } else if (!isPastDue) {
                     // Ready to send - RED background to make it prominent
                     countdownDisplay = `<div class="countdown-timer countdown-ready" style="background: #dc3545; color: white; font-weight: bold; animation: pulse 2s infinite;">
-                        � Anniversary ${order.daysRemaining === 0 ? 'is NOW!' : `was ${detailedCountdown} ago`} - READY TO SEND!${order.isTestMode ? ' (TEST MODE)' : ''}
+                        Anniversary ${order.daysRemaining === 0 ? 'is NOW!' : `was ${detailedCountdown} ago`} - READY TO SEND!${order.isTestMode ? ' (TEST MODE)' : ''}
                     </div>`;
                 } else {
                     // Past due
@@ -1430,7 +1430,7 @@ Ladun Cakes`;
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div>
-                                <p><strong>� Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
+                                <p><strong> Phone:</strong> ${order.customerPhone || 'Not provided'}</p>
                                 <p><strong>📅 Collection Date:</strong> ${formatDate(order.collectionDate)}</p>
                                 <p><strong>🎂 Anniversary Date:</strong> ${formatDate(order.anniversaryDate.toISOString().split('T')[0])}</p>
                             </div>
@@ -1651,11 +1651,23 @@ Ladun Cakes`;
                     mergedOrders.push(cloudOrder);
                 }
             });
+
+            // Ensure only the date part of collectionDate is included in mergedOrders
+            const sanitizedOrders = mergedOrders.map(order => {
+                if (order.collectionDate && order.collectionDate.includes('T')) {
+                    return {
+                        ...order,
+                        collectionDate: order.collectionDate.split('T')[0] // Strip time component
+                    };
+                }
+                return order;
+            });
+
             const url = DEFAULT_GOOGLE_SHEETS_URL;
             syncBtn.innerHTML = '🔄 Syncing...';
             showSyncStatus('🔄 Syncing with cloud...', 'info');
             try {
-                console.log('Starting sync with', mergedOrders.length, 'orders (merged local + cloud)');
+                console.log('Starting sync with', sanitizedOrders.length, 'orders (merged local + cloud)');
                 const response = await fetch(url, {
                     method: 'POST',
                     mode: 'cors',
@@ -1665,7 +1677,7 @@ Ladun Cakes`;
                     },
                     body: JSON.stringify({
                         action: 'syncOrders',
-                        orders: mergedOrders
+                        orders: sanitizedOrders
                     })
                 });
                 console.log('Response status:', response.status);
