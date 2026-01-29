@@ -554,8 +554,7 @@
                     <!-- Cloud Sync Section -->
                     <div style="padding-top: 15px; border-top: 2px dashed #C9A13C;">
                         <h4 style="color: #2E2E2E; margin-bottom: 10px;">☁️ Cloud Sync</h4>
-                                <button onclick="resetLocalData()" style="padding: 10px 16px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 10px; width: 100%;">
-                                    🗑️ Reset Local Data
+                                <!-- Reset Local Data button removed: all data is now cloud-based -->
                                 </button>
                         <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Backup & sync data across devices via Google Sheets.</p>
                         
@@ -676,12 +675,7 @@
         // Load saved configuration
         function loadConfig() {
 
-            // Load saved orders
-            const savedOrders = localStorage.getItem('miniAppOrders');
-            if (savedOrders) {
-                orders = JSON.parse(savedOrders);
-                displayOrders();
-            }
+            // No local orders: will fetch from cloud
 
             // Load config settings including test mode
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
@@ -704,9 +698,7 @@
         function clearAllOrders() {
             if (confirm('Are you sure you want to delete ALL orders? This cannot be undone.')) {
                 orders = [];
-                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                displayOrders();
-                showStatus('🗑️ All orders cleared successfully!', 'success');
+                showStatus('🗑️ All orders cleared locally. Please sync to update cloud.', 'info');
             }
         }
 
@@ -734,9 +726,8 @@
                     }
                 }
             });
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            displayOrders(); // Refresh display
+            // No localStorage for orders
+            // displayOrders() will be called after cloud sync
             
             if (config.testMode) {
                 showStatus('🧪 Test Mode ON: Anniversary emails available 1 minute after collection notice is sent', 'success');
@@ -840,19 +831,14 @@
             };
 
             orders.unshift(order);
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            displayOrders();
-            
-            // Auto-sync to cloud after saving order
-            autoSyncToCloud();
-
-            showStatus(`🎂 Order saved for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
-            
-            // Reset form
-            document.getElementById('orderForm').reset();
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Save Order 🎂';
+            showStatus('⏳ Syncing new order to cloud...', 'info');
+            syncToCloud().then(() => {
+                showStatus(`🎂 Order saved and synced for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
+                // Reset form
+                document.getElementById('orderForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Save Order 🎂';
+            });
         });
 
         // Display orders function
@@ -1108,20 +1094,12 @@ Ladun Cakes`;
                 order.anniversaryDate = anniversaryDate.toISOString();
             }
             
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            // Auto-sync to cloud after sending collection WhatsApp
-            autoSyncToCloud();
-            
-            setTimeout(() => {
-                displayOrders();
-            }, 1000);
-            
-            // Auto-hide the message after 4 seconds
-            setTimeout(() => {
-                const statusDiv = document.getElementById('statusMessage');
-                statusDiv.style.display = 'none';
-            }, 4000);
+            // No localStorage
+            // Sync to cloud after sending collection WhatsApp
+            showStatus('⏳ Syncing collection WhatsApp status to cloud...', 'info');
+            syncToCloud().then(() => {
+                showStatus('✅ Collection WhatsApp sent and synced!', 'success');
+            });
         }
 
         function sendAnniversaryWhatsApp(orderId) {
@@ -1156,26 +1134,12 @@ Ladun Cakes`;
             order.anniversaryWhatsappSent = true;
             order.anniversarySent = true; // For cloud sync compatibility
             order.anniversarySentDate = new Date().toLocaleString();
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            
-            // Auto-sync to cloud after sending anniversary WhatsApp
-            autoSyncToCloud();
-            
-            showStatus(`🎉 Anniversary WhatsApp opened for ${order.customerName}!`, 'success');
-            
-            setTimeout(() => {
-                displayOrders();
-                const manager = document.getElementById('anniversaryManager');
-                if (manager.style.display !== 'none') {
-                    displayAnniversaryOrders();
-                }
-            }, 1000);
-            
-            // Auto-hide the message after 4 seconds
-            setTimeout(() => {
-                const statusDiv = document.getElementById('statusMessage');
-                statusDiv.style.display = 'none';
-            }, 4000);
+            // No localStorage
+            // Sync to cloud after sending anniversary WhatsApp
+            showStatus('⏳ Syncing anniversary WhatsApp status to cloud...', 'info');
+            syncToCloud().then(() => {
+                showStatus(`🎉 Anniversary WhatsApp sent and synced for ${order.customerName}!`, 'success');
+            });
         }
 
         // Auto-refresh anniversary management every 5 seconds to update countdowns
@@ -1466,10 +1430,10 @@ Ladun Cakes`;
                 if (order) {
                     order.anniversarySkipped = true;
                     order.anniversarySkippedDate = new Date().toLocaleString();
-                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                    showStatus(`❌ Anniversary WhatsApp skipped for ${order.customerName}`, 'info');
-                    displayAnniversaryOrders();
-                    displayOrders(); // Also refresh main display
+                    showStatus(`❌ Anniversary WhatsApp skipped for ${order.customerName}. Syncing to cloud...`, 'info');
+                    syncToCloud().then(() => {
+                        showStatus(`❌ Anniversary WhatsApp skipped and synced for ${order.customerName}`, 'success');
+                    });
                 }
             }
         }
@@ -1479,10 +1443,10 @@ Ladun Cakes`;
             if (order) {
                 delete order.anniversarySkipped;
                 delete order.anniversarySkippedDate;
-                localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-                showStatus(`↩️ Anniversary WhatsApp option restored for ${order.customerName}`, 'success');
-                displayAnniversaryOrders();
-                displayOrders(); // Also refresh main display
+                showStatus(`↩️ Anniversary WhatsApp option restored for ${order.customerName}. Syncing to cloud...`, 'info');
+                syncToCloud().then(() => {
+                    showStatus(`↩️ Anniversary WhatsApp option restored and synced for ${order.customerName}`, 'success');
+                });
             }
         }
 
@@ -1532,14 +1496,14 @@ Ladun Cakes`;
             };
             
             orders.push(testOrder);
-            localStorage.setItem('miniAppOrders', JSON.stringify(orders));
-            displayOrders();
-            showStatus('🧪 Test order added! Check Anniversary Manager to test anniversary emails.', 'success');
-            
-            // Auto-open anniversary manager
-            setTimeout(() => {
-                toggleAnniversaryManager();
-            }, 1000);
+            showStatus('🧪 Test order added! Syncing to cloud...', 'info');
+            syncToCloud().then(() => {
+                showStatus('🧪 Test order added and synced! Check Anniversary Manager to test anniversary emails.', 'success');
+                // Auto-open anniversary manager
+                setTimeout(() => {
+                    toggleAnniversaryManager();
+                }, 1000);
+            });
         }
         
         // Add test button to console for easy access
@@ -1550,24 +1514,7 @@ Ladun Cakes`;
 
         // ===== GOOGLE SHEETS CLOUD SYNC FUNCTIONS =====
 
-                // Reset Local Data: clears all local orders and config, then syncs from cloud
-                function resetLocalData() {
-                    if (confirm('Are you sure you want to reset all local data? This will clear all orders and settings on this device and reload from the cloud.')) {
-                        // Preserve testMode if set
-                        let testMode = false;
-                        const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-                        if (config && typeof config.testMode !== 'undefined') {
-                            testMode = config.testMode;
-                        }
-                        localStorage.removeItem('miniAppOrders');
-                        localStorage.removeItem('miniAppConfig');
-                        orders = [];
-                        // Restore testMode
-                        localStorage.setItem('miniAppConfig', JSON.stringify({ testMode }));
-                        displayOrders();
-                        showSyncStatus('🗑️ Local data cleared. Please sync to reload from cloud.', 'info');
-                    }
-                }
+                // Reset Local Data function removed: all data is now cloud-based
         
         // Default Google Sheets API URL (hardcoded for convenience)
         const DEFAULT_GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw1aiz1BqUm6pvDtInwIWdEot3i7fmkJny4jrgjFBGKTN2mNa2MUO1lrcIZwQNbGVXT6g/exec';
@@ -1688,7 +1635,6 @@ Ladun Cakes`;
                     console.log('DEBUG: Pending orders after filter:', pendingOrders);
                     // Update local orders with only pending items
                     orders = pendingOrders;
-                    localStorage.setItem('miniAppOrders', JSON.stringify(orders));
                     displayOrders();
                     // Update last sync time
                     const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
