@@ -572,9 +572,24 @@
                             </button>
                         </div>
                         
-                        <button onclick="syncToCloud()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #C9A13C 0%, #D4AF47 100%); color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+                        <button onclick="debugSyncBtnClick()" id="syncBtn" style="padding: 12px 16px; background: linear-gradient(135deg, #C9A13C 0%, #D4AF47 100%); color: #2E2E2E; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
                             🔄 Sync Now
                         </button>
+                            <script>
+                            // Debug wrapper for sync button (must be global)
+                            function debugSyncBtnClick() {
+                                const syncStatus = document.getElementById('syncStatus');
+                                if (syncStatus) {
+                                    syncStatus.style.display = 'block';
+                                    syncStatus.innerHTML = '🟡 Sync button clicked! (debug)';
+                                }
+                                console.log('DEBUG: Sync button clicked!');
+                                setTimeout(() => {
+                                    if (syncStatus) syncStatus.innerHTML = '';
+                                }, 2000);
+                                syncToCloud();
+                            }
+                            </script>
                         
                         <div id="syncStatus" style="margin-top: 10px; padding: 10px; border-radius: 5px; font-size: 12px; display: none;"></div>
                         
@@ -793,70 +808,57 @@
                 return;
             }
 
-            // Always fetch latest cloud orders before creating a new order
-            fetch(DEFAULT_GOOGLE_SHEETS_URL + '?action=getOrders', {
-                method: 'GET',
-                mode: 'cors'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.orders) {
-                    orders = data.orders;
-                }
-                // Get form data
-                const orderData = {
-                    customerName: document.getElementById('customerName').value,
-                    customerPhone: document.getElementById('customerPhone').value,
-                    cakeType: document.getElementById('cakeType').value,
-                    orderDetails: document.getElementById('orderDetails').value || 'No special requests',
-                    collectionDate: collectionDate,
-                    collectionTime: collectionTime,
-                    orderDate: new Date().toLocaleDateString()
-                };
+            // Combine collectionDate and collectionTime into a single ISO string
+            const collectionDateTime = new Date(`${collectionDate}T${collectionTime}`).toISOString();
 
-                // Generate order number in format YYYYMM_XX
-                const now = new Date();
-                const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-                // Find the highest order number for this month
-                const currentMonthOrders = orders.filter(o => 
-                    typeof o.id === 'string' && o.id.startsWith(yearMonth)
-                );
-                let nextNumber = 1;
-                if (currentMonthOrders.length > 0) {
-                    const numbers = currentMonthOrders.map(o => {
-                        const parts = o.id.split('_');
-                        return parts.length > 1 ? parseInt(parts[1]) : 0;
-                    });
-                    nextNumber = Math.max(...numbers) + 1;
-                }
-                const orderId = `${yearMonth}_${String(nextNumber).padStart(2, '0')}`;
-                // Store the order
-                const order = {
-                    id: orderId,
-                    customerName: orderData.customerName,
-                    customerPhone: orderData.customerPhone,
-                    cakeType: orderData.cakeType,
-                    orderDetails: orderData.orderDetails,
-                    collectionDate: collectionDate,
-                    collectionTime: collectionTime,
-                    orderDate: new Date().toLocaleDateString(),
-                    thankYouSent: '',
-                    whatsappSent: '',
-                    anniversarySent: '',
-                    anniversaryWhatsappSent: ''
-                };
-                orders.unshift(order);
-                showStatus('⏳ Syncing new order to cloud...', 'info');
-                syncToCloud().then(() => {
-                    showStatus(`🎂 Order saved and synced for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
-                    // Reset form
-                    document.getElementById('orderForm').reset();
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Save Order 🎂';
+            // Update orderData to use the combined date-time
+            const orderData = {
+                customerName: document.getElementById('customerName').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                cakeType: document.getElementById('cakeType').value,
+                orderDetails: document.getElementById('orderDetails').value || 'No special requests',
+                collectionDateTime: collectionDateTime, // Use combined date-time
+                orderDate: new Date().toLocaleDateString()
+            };
+
+            // Generate order number in format YYYYMM_XX
+            const now = new Date();
+            const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
+            // Find the highest order number for this month
+            const currentMonthOrders = orders.filter(o => 
+                typeof o.id === 'string' && o.id.startsWith(yearMonth)
+            );
+            let nextNumber = 1;
+            if (currentMonthOrders.length > 0) {
+                const numbers = currentMonthOrders.map(o => {
+                    const parts = o.id.split('_');
+                    return parts.length > 1 ? parseInt(parts[1]) : 0;
                 });
-            })
-            .catch(err => {
-                showStatus('❌ Failed to fetch latest cloud orders. Please try again.', 'error');
+                nextNumber = Math.max(...numbers) + 1;
+            }
+            const orderId = `${yearMonth}_${String(nextNumber).padStart(2, '0')}`;
+            // Store the order
+            const order = {
+                id: orderId,
+                customerName: orderData.customerName,
+                customerPhone: orderData.customerPhone,
+                cakeType: orderData.cakeType,
+                orderDetails: orderData.orderDetails,
+                collectionDate: collectionDate,
+                collectionTime: collectionTime,
+                orderdate: new Date().toLocaleDateString(), // match sheet header
+                thankYouSent: '',
+                whatsappSent: '',
+                anniversarySent: '',
+                anniversarySkipped: '',
+                anniversaryWhatsappSent: ''
+            };
+            orders.unshift(order);
+            showStatus('⏳ Syncing new order to cloud...', 'info');
+            syncToCloud().then(() => {
+                showStatus(`🎂 Order saved and synced for ${orderData.customerName}! You can send WhatsApp messages when ready.`, 'success');
+                // Reset form
+                document.getElementById('orderForm').reset();
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Save Order 🎂';
             });
