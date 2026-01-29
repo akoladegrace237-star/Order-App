@@ -846,7 +846,7 @@
                 cakeType: orderData.cakeType,
                 orderDetails: orderData.orderDetails,
                 collectionDate: orderData.collectionDate,
-                collectionTime: orderData.collectionTime,
+                collectionTime: orderData.collectionTime, // Ensure this is included
                 orderdate: orderData.orderdate,
                 thankYouSent: '',
                 whatsappSent: '',
@@ -871,11 +871,14 @@
             const ordersList = document.getElementById('ordersList');
             // Debug: log all orders
             console.log('All loaded orders:', orders);
-            // Show all orders where thankYouSent, anniversarySent, or anniversarySkipped is blank (pending)
+            // Show all orders where collectionDate is today or in the future and thankYouSent is blank (pending)
+            const today = new Date();
+            today.setHours(0,0,0,0); // Normalize to midnight
             const visibleOrders = orders.filter(order => {
-                const isThankYouPending = !order.thankYouSent || order.thankYouSent === '' || order.thankYouSent === false || order.thankYouSent === 'FALSE';
-                const isAnnivPending = order.thankYouSent === 'Sent' && (!order.anniversarySent || order.anniversarySent === '' || order.anniversarySent === false || order.anniversarySent === 'FALSE') && (!order.anniversarySkipped || order.anniversarySkipped === '' || order.anniversarySkipped === false || order.anniversarySkipped === 'FALSE');
-                return isThankYouPending || isAnnivPending;
+                const orderCollectionDate = new Date(order.collectionDate + 'T00:00:00');
+                const isFutureOrToday = orderCollectionDate >= today;
+                const isThankYouPending = !order.thankYouSent || order.thankYouSent === '';
+                return isFutureOrToday && isThankYouPending;
             });
             if (visibleOrders.length === 0) {
                 ordersSection.style.display = 'none';
