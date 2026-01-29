@@ -1533,7 +1533,7 @@ Ladun Cakes`;
                 // Reset Local Data function removed: all data is now cloud-based
         
         // Default Google Sheets API URL (hardcoded for convenience)
-        const DEFAULT_GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw1aiz1BqUm6pvDtInwIWdEot3i7fmkJny4jrgjFBGKTN2mNa2MUO1lrcIZwQNbGVXT6g/exec';
+        const DEFAULT_GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwQDdxFPdr9pI40TE7dK8inqV5Nybu2H9JtYjizl_8eP1SSUZkvruzS39xBV8gNlQA/exec';
         
         // Load cloud config on startup
         function loadCloudConfig() {
@@ -1644,15 +1644,20 @@ Ladun Cakes`;
                 } else {
                     // Debug: Log all orders from cloud
                     console.log('DEBUG: Raw cloud orders:', data.orders);
-                    // Normalize boolean fields for all orders
-                    const normalizeBool = v => (v === true || v === 'TRUE') ? true : (v === false || v === 'FALSE') ? false : !!v;
+                    // Normalize status fields: TRUE/'TRUE' → 'Sent', FALSE/'FALSE' → '', 'Sent'/'Skipped' stay as is
+                    function normalizeStatus(val, sentVal = 'Sent', skippedVal = 'Skipped') {
+                        if (val === true || val === 'TRUE' || val === sentVal) return sentVal;
+                        if (val === false || val === 'FALSE' || val === '' || val == null) return '';
+                        if (val === skippedVal) return skippedVal;
+                        return val;
+                    }
                     const allOrders = (data.orders || []).map(order => ({
                         ...order,
-                        whatsappSent: normalizeBool(order.whatsappSent),
-                        thankYouSent: normalizeBool(order.thankYouSent),
-                        anniversarySent: normalizeBool(order.anniversarySent),
-                        anniversarySkipped: normalizeBool(order.anniversarySkipped),
-                        anniversaryWhatsappSent: normalizeBool(order.anniversaryWhatsappSent)
+                        whatsappSent: normalizeStatus(order.whatsappSent, 'Sent'),
+                        thankYouSent: normalizeStatus(order.thankYouSent, 'Sent'),
+                        anniversarySent: normalizeStatus(order.anniversarySent, 'Sent'),
+                        anniversarySkipped: normalizeStatus(order.anniversarySkipped, 'Sent', 'Skipped'),
+                        anniversaryWhatsappSent: normalizeStatus(order.anniversaryWhatsappSent, 'Sent')
                     }));
                     // Update local orders with ALL orders (pending, sent, skipped)
                     orders = allOrders;
