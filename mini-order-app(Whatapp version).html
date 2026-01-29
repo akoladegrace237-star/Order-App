@@ -1538,17 +1538,10 @@ Ladun Cakes`;
         // Load cloud config on startup
         function loadCloudConfig() {
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            
-            // Use saved URL or default URL
-            const url = config.googleSheetsUrl || DEFAULT_GOOGLE_SHEETS_URL;
-            document.getElementById('googleSheetsUrl').value = url;
-            
-            // Save default URL if not already saved
-            if (!config.googleSheetsUrl) {
-                config.googleSheetsUrl = DEFAULT_GOOGLE_SHEETS_URL;
-                localStorage.setItem('miniAppConfig', JSON.stringify(config));
-            }
-            
+            // Always enforce the default URL
+            config.googleSheetsUrl = DEFAULT_GOOGLE_SHEETS_URL;
+            localStorage.setItem('miniAppConfig', JSON.stringify(config));
+            document.getElementById('googleSheetsUrl').value = DEFAULT_GOOGLE_SHEETS_URL;
             if (config.lastSync) {
                 updateLastSyncDisplay(config.lastSync);
             }
@@ -1556,32 +1549,23 @@ Ladun Cakes`;
         
         // Save cloud URL to config
         function saveCloudConfig() {
-            const url = document.getElementById('googleSheetsUrl').value.trim() || DEFAULT_GOOGLE_SHEETS_URL;
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
-            config.googleSheetsUrl = url;
+            config.googleSheetsUrl = DEFAULT_GOOGLE_SHEETS_URL;
             localStorage.setItem('miniAppConfig', JSON.stringify(config));
+            document.getElementById('googleSheetsUrl').value = DEFAULT_GOOGLE_SHEETS_URL;
             showSyncStatus('✅ Google Sheets URL saved!', 'success');
         }
         
         // Test connection to Google Sheets
         async function testCloudConnection() {
-            const url = document.getElementById('googleSheetsUrl').value.trim();
-            
-            if (!url) {
-                showSyncStatus('❌ Please enter a Google Sheets API URL first', 'error');
-                return;
-            }
-            
+            const url = DEFAULT_GOOGLE_SHEETS_URL;
             showSyncStatus('🔄 Testing connection...', 'info');
-            
             try {
                 const response = await fetch(url + '?action=getOrders', {
                     method: 'GET',
                     mode: 'cors'
                 });
-                
                 const data = await response.json();
-                
                 if (data.error) {
                     showSyncStatus('❌ Connection failed: ' + data.error, 'error');
                 } else {
@@ -1596,23 +1580,13 @@ Ladun Cakes`;
         
         // Sync orders to/from Google Sheets
         async function syncToCloud() {
-            const url = document.getElementById('googleSheetsUrl').value.trim();
-            
-            if (!url) {
-                showSyncStatus('❌ Please configure Google Sheets URL first', 'error');
-                return;
-            }
-            
+            const url = DEFAULT_GOOGLE_SHEETS_URL;
             const syncBtn = document.getElementById('syncBtn');
             syncBtn.disabled = true;
             syncBtn.innerHTML = '🔄 Syncing...';
             showSyncStatus('🔄 Syncing with cloud...', 'info');
-            
             try {
                 console.log('Starting sync with', orders.length, 'local orders');
-                
-                // Send local orders to cloud for smart merge
-                // Use no-cors mode and handle redirect for Google Apps Script
                 const response = await fetch(url, {
                     method: 'POST',
                     mode: 'cors',
@@ -1625,11 +1599,9 @@ Ladun Cakes`;
                         orders: orders
                     })
                 });
-                
                 console.log('Response status:', response.status);
                 const text = await response.text();
                 console.log('Response text:', text);
-                
                 let data;
                 try {
                     data = JSON.parse(text);
@@ -1638,13 +1610,11 @@ Ladun Cakes`;
                     showSyncStatus('❌ Sync failed: Invalid response from server', 'error');
                     return;
                 }
-                
                 if (data.error) {
                     showSyncStatus('❌ Sync failed: ' + data.error, 'error');
                 } else {
                     // Debug: Log all orders from cloud
                     console.log('DEBUG: Raw cloud orders:', data.orders);
-                    // Normalize status fields: TRUE/'TRUE' → 'Sent', FALSE/'FALSE' → '', 'Sent'/'Skipped' stay as is
                     function normalizeStatus(val, sentVal = 'Sent', skippedVal = 'Skipped') {
                         if (val === true || val === 'TRUE' || val === sentVal) return sentVal;
                         if (val === false || val === 'FALSE' || val === '' || val == null) return '';
@@ -1659,16 +1629,13 @@ Ladun Cakes`;
                         anniversarySkipped: normalizeStatus(order.anniversarySkipped, 'Sent', 'Skipped'),
                         anniversaryWhatsappSent: normalizeStatus(order.anniversaryWhatsappSent, 'Sent')
                     }));
-                    // Update local orders with ALL orders (pending, sent, skipped)
                     orders = allOrders;
                     displayOrders();
-                    // Update last sync time
                     const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
                     config.lastSync = data.lastSync;
                     localStorage.setItem('miniAppConfig', JSON.stringify(config));
                     updateLastSyncDisplay(data.lastSync);
                     showSyncStatus(`✅ Synced! ${allOrders.length} orders in cloud`, 'success');
-                    // Refresh anniversary display if visible
                     const anniversaryManager = document.getElementById('anniversaryManager');
                     if (anniversaryManager && anniversaryManager.style.display !== 'none') {
                         displayAnniversaryOrders();
