@@ -829,26 +829,14 @@
                 cakeType: document.getElementById('cakeType').value,
                 orderDetails: document.getElementById('orderDetails').value || 'No special requests',
                 collectionDate: collectionDate, // Use collectionDate only
-                collectionTime: collectionTime,
-                orderDate: new Date().toLocaleDateString()
+                orderdate: new Date().toLocaleDateString(), // match sheet header
+                thankYouSent: '',
+                whatsappSent: '',
+                anniversarySent: '',
+                anniversarySkipped: '',
+                anniversaryWhatsappSent: ''
             };
-
-            // Generate order number in format YYYYMM_XX
-            const now = new Date();
-            const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-            // Find the highest order number for this month
-            const currentMonthOrders = orders.filter(o => 
-                typeof o.id === 'string' && o.id.startsWith(yearMonth)
-            );
-            let nextNumber = 1;
-            if (currentMonthOrders.length > 0) {
-                const numbers = currentMonthOrders.map(o => {
-                    const parts = o.id.split('_');
-                    return parts.length > 1 ? parseInt(parts[1]) : 0;
-                });
-                nextNumber = Math.max(...numbers) + 1;
-            }
-            const orderId = `${yearMonth}_${String(nextNumber).padStart(2, '0')}`;
+            const orderId = `${collectionDate}_${String(Math.floor(Math.random() * 100)).padStart(2, '0')}`;
             // Store the order
             const order = {
                 id: orderId,
@@ -857,7 +845,6 @@
                 cakeType: orderData.cakeType,
                 orderDetails: orderData.orderDetails,
                 collectionDate: collectionDate,
-                collectionTime: collectionTime,
                 orderdate: new Date().toLocaleDateString(), // match sheet header
                 thankYouSent: '',
                 whatsappSent: '',
