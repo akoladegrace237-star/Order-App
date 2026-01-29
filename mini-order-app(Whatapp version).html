@@ -1695,6 +1695,10 @@ Ladun Cakes`;
                 return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
             }
             return allOrders.filter(order => {
+                // Exclude if anniversarySkipped is true
+                if (isTrue(order.anniversarySkipped)) {
+                    return false;
+                }
                 // Use correct field names from cloud data
                 // thankYouSent = collection WhatsApp sent
                 // anniversarySent = anniversary WhatsApp sent
