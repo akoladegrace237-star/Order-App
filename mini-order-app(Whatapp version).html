@@ -876,7 +876,7 @@
             today.setHours(0,0,0,0); // Normalize to midnight
             const visibleOrders = orders.filter(order => {
                 const orderCollectionDate = new Date(order.collectionDate + 'T00:00:00');
-                const isFutureOrToday = orderCollectionDate >= today;
+                const isFutureOrToday = orderCollectionDate.getTime() >= today.getTime();
                 const isThankYouPending = !order.thankYouSent || order.thankYouSent === '';
                 return isFutureOrToday && isThankYouPending;
             });
