@@ -824,10 +824,10 @@
                 collectionDate: orderData.collectionDate,
                 collectionTime: orderData.collectionTime,
                 orderDate: new Date().toLocaleDateString(),
-                thankYouSent: false,
-                whatsappSent: false,
-                anniversarySent: false,
-                anniversaryWhatsappSent: false
+                thankYouSent: '',
+                whatsappSent: '',
+                anniversarySent: '',
+                anniversaryWhatsappSent: ''
             };
 
             orders.unshift(order);
@@ -850,7 +850,7 @@
             const config = JSON.parse(localStorage.getItem('miniAppConfig') || '{}');
             
             // Filter out orders that have had collection notice sent via WhatsApp
-            const visibleOrders = orders.filter(order => !order.whatsappSent);
+            const visibleOrders = orders.filter(order => !order.whatsappSent || order.whatsappSent === '');
             
             if (visibleOrders.length === 0) {
                 ordersSection.style.display = 'none';
@@ -1071,10 +1071,10 @@ Ladun Cakes`;
             showStatus(`💬 Collection WhatsApp opened for ${order.customerName}!`, 'success');
             
             // Mark as sent and calculate anniversary date
-            order.whatsappSent = true;
+            order.whatsappSent = 'Sent';
             order.whatsappSentTime = new Date().toISOString();
             // Also update thankYouSent for cloud sync compatibility
-            order.thankYouSent = true;
+            order.thankYouSent = 'Sent';
             order.thankYouSentTime = order.whatsappSentTime;
             
             // Calculate and store the anniversary date
@@ -1131,8 +1131,8 @@ Ladun Cakes`;
             }
             
             // Mark as sent
-            order.anniversaryWhatsappSent = true;
-            order.anniversarySent = true; // For cloud sync compatibility
+            order.anniversaryWhatsappSent = 'Sent';
+            order.anniversarySent = 'Sent'; // For cloud sync compatibility
             order.anniversarySentDate = new Date().toLocaleString();
             // No localStorage
             // Sync to cloud after sending anniversary WhatsApp
@@ -1204,14 +1204,17 @@ Ladun Cakes`;
 
             // Filter and sort orders by collection date
             // Helper to normalize boolean or 'TRUE'/'FALSE' string
-            function isTrue(val) {
-                return val === true || val === 'TRUE';
+            function isSent(val) {
+                return val === 'Sent';
             }
-            function isFalse(val) {
-                return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
+            function isSkipped(val) {
+                return val === 'Skipped';
+            }
+            function isPending(val) {
+                return !val || val === '';
             }
             const ordersWithAnniversary = orders
-                .filter(order => isTrue(order.whatsappSent) && isFalse(order.anniversarySkipped) && isFalse(order.anniversarySent))
+                .filter(order => isSent(order.whatsappSent) && isPending(order.anniversarySkipped) && isPending(order.anniversarySent))
                 .map(order => {
                     let anniversaryDate;
                     
@@ -1441,7 +1444,7 @@ Ladun Cakes`;
             if (confirm('Are you sure you want to skip sending anniversary WhatsApp to this customer? You can undo this later.')) {
                 const order = orders.find(o => o.id === orderId);
                 if (order) {
-                    order.anniversarySkipped = true;
+                    order.anniversarySkipped = 'Skipped';
                     order.anniversarySkippedDate = new Date().toLocaleString();
                     showStatus(`❌ Anniversary WhatsApp skipped for ${order.customerName}. Syncing to cloud...`, 'info');
                     syncToCloud().then(() => {
@@ -1454,8 +1457,8 @@ Ladun Cakes`;
         function unSkipAnniversary(orderId) {
             const order = orders.find(o => o.id === orderId);
             if (order) {
-                delete order.anniversarySkipped;
-                delete order.anniversarySkippedDate;
+                order.anniversarySkipped = '';
+                order.anniversarySkippedDate = '';
                 showStatus(`↩️ Anniversary WhatsApp option restored for ${order.customerName}. Syncing to cloud...`, 'info');
                 syncToCloud().then(() => {
                     showStatus(`↩️ Anniversary WhatsApp option restored and synced for ${order.customerName}`, 'success');
@@ -1503,9 +1506,9 @@ Ladun Cakes`;
                 collectionTime: '14:00',
                 orderDate: testDate.toLocaleDateString(),
                 timestamp: testDate.getTime(),
-                thankYouSent: true, // Collection notice already sent
-                anniversarySent: false,
-                emailSent: true
+                thankYouSent: 'Sent', // Collection notice already sent
+                anniversarySent: '',
+                emailSent: 'Sent'
             };
             
             orders.push(testOrder);
@@ -1642,7 +1645,7 @@ Ladun Cakes`;
                     // Debug: Log all orders from cloud
                     console.log('DEBUG: Raw cloud orders:', data.orders);
                     // Normalize boolean fields for all orders
-                    const normalizeBool = v => v === true || v === 'TRUE';
+                    const normalizeBool = v => (v === true || v === 'TRUE') ? true : (v === false || v === 'FALSE') ? false : !!v;
                     const allOrders = (data.orders || []).map(order => ({
                         ...order,
                         whatsappSent: normalizeBool(order.whatsappSent),
@@ -1678,23 +1681,26 @@ Ladun Cakes`;
         // Filter orders to only include those with pending actions
         function filterPendingOrders(allOrders) {
             // Helper to normalize boolean or 'TRUE'/'FALSE' string
-            function isTrue(val) {
-                return val === true || val === 'TRUE';
+            function isSent(val) {
+                return val === 'Sent';
             }
-            function isFalse(val) {
-                return val === false || val === 'FALSE' || val === undefined || val === '' || val === null;
+            function isSkipped(val) {
+                return val === 'Skipped';
+            }
+            function isPending(val) {
+                return !val || val === '';
             }
             return allOrders.filter(order => {
-                // If anniversarySkipped is true, order is completed
-                if (isTrue(order.anniversarySkipped)) {
+                // If anniversarySkipped is Skipped, order is completed
+                if (isSkipped(order.anniversarySkipped)) {
                     return false;
                 }
-                // Pending if thankYouSent is false
-                if (isFalse(order.thankYouSent)) {
+                // Pending if thankYouSent is blank
+                if (isPending(order.thankYouSent)) {
                     return true;
                 }
-                // Pending if thankYouSent is true, anniversarySent is false, and not skipped
-                if (isTrue(order.thankYouSent) && isFalse(order.anniversarySent)) {
+                // Pending if thankYouSent is Sent, anniversarySent is blank, and not skipped
+                if (isSent(order.thankYouSent) && isPending(order.anniversarySent) && isPending(order.anniversarySkipped)) {
                     return true;
                 }
                 // Otherwise, completed
